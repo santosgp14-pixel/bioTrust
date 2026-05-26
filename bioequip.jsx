@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, createContext, useContext } from "react";
 
 /* ── Design tokens ─────────────────────────────────────────────────────────── */
-const T = {
+const DARK = {
   bg:       "#0f1117",
   surface:  "#161b27",
   card:     "#1c2333",
@@ -30,6 +30,39 @@ const T = {
   purpleBg: "#1e1432",
   purpleTxt:"#c4b5fd",
 };
+
+const LIGHT = {
+  bg:       "#f0f4f9",
+  surface:  "#ffffff",
+  card:     "#ffffff",
+  cardHov:  "#eef2fa",
+  border:   "#d1d9e6",
+  borderSub:"#e5eaf4",
+  text:     "#0f172a",
+  textSub:  "#475569",
+  textMut:  "#94a3b8",
+  accent:   "#2563eb",
+  accentSub:"#dbeafe",
+  accentHov:"#1d4ed8",
+  green:    "#16a34a",
+  greenBg:  "#dcfce7",
+  greenTxt: "#15803d",
+  red:      "#dc2626",
+  redBg:    "#fee2e2",
+  redTxt:   "#b91c1c",
+  amber:    "#d97706",
+  amberBg:  "#fef3c7",
+  amberTxt: "#b45309",
+  blue:     "#0284c7",
+  blueBg:   "#e0f2fe",
+  blueTxt:  "#0369a1",
+  purple:   "#7c3aed",
+  purpleBg: "#ede9fe",
+  purpleTxt:"#6d28d9",
+};
+
+const ThemeCtx = createContext(DARK);
+const useT = () => useContext(ThemeCtx);
 
 /* ── Data ──────────────────────────────────────────────────────────────────── */
 const EQUIPMENT = [
@@ -175,32 +208,34 @@ function sortCertsByStatus(certs) {
   return [...certs].sort((a,b) => (order[a.status]||3) - (order[b.status]||3));
 }
 
-/* ── Tiny shared components ────────────────────────────────────────────────── */
-const STATUS_CFG = {
+/* ── Cfg makers (theme-aware) ─────────────────────────────────────────────── */
+const mkStatus  = T => ({
   operational: { label:"Operativo",    dot:T.green,  bg:T.greenBg,  text:T.greenTxt },
   critical:    { label:"Crítico",      dot:T.red,    bg:T.redBg,    text:T.redTxt   },
   "in-repair": { label:"En reparación",dot:T.amber,  bg:T.amberBg,  text:T.amberTxt },
   "in-transit":{ label:"En tránsito",  dot:T.blue,   bg:T.blueBg,   text:T.blueTxt  },
-};
-const CERT_CFG = {
-  valid:    { label:"Vigente",     bg:T.greenBg,  text:T.greenTxt },
-  expiring: { label:"Por vencer",  bg:T.amberBg,  text:T.amberTxt },
-  expired:  { label:"Vencido",     bg:T.redBg,    text:T.redTxt   },
-};
-const TK_CFG = {
+});
+const mkCertCfg = T => ({
+  valid:    { label:"Vigente",    bg:T.greenBg, text:T.greenTxt },
+  expiring: { label:"Por vencer", bg:T.amberBg, text:T.amberTxt },
+  expired:  { label:"Vencido",    bg:T.redBg,   text:T.redTxt   },
+});
+const mkTkCfg   = T => ({
   diagnosing:       { label:"Diagnóstico",   bg:T.purpleBg, text:T.purpleTxt },
   "waiting-parts":  { label:"Esp. repuestos",bg:T.amberBg,  text:T.amberTxt  },
-  "budget-approval":{ label:"Aprob. pres.",  bg:"#1a1600",  text:"#facc15"   },
+  "budget-approval":{ label:"Aprob. pres.",  bg:T.amberBg,  text:T.amberTxt  },
   repairing:        { label:"Reparando",     bg:T.blueBg,   text:T.blueTxt   },
   ready:            { label:"Listo",         bg:T.greenBg,  text:T.greenTxt  },
-  delivered:        { label:"Entregado",     bg:"#0d1f0d",  text:"#86efac"   },
-};
-const PRI_CFG = {
+  delivered:        { label:"Entregado",     bg:T.greenBg,  text:T.greenTxt  },
+});
+const mkPriCfg  = T => ({
   critical: { label:"Crítica", color:T.red },
   high:     { label:"Alta",    color:T.amber },
   medium:   { label:"Media",   color:T.blue },
   low:      { label:"Baja",    color:T.textMut },
-};
+});
+
+/* ── Tiny shared components ─────────────────────────────────────────────────── */
 
 function Pill({ cfg, dot }) {
   return (
@@ -220,6 +255,7 @@ function Avatar({ initials, color="#4f7cff" }) {
 }
 
 function SectionHeader({ title, sub, action }) {
+  const T = useT();
   return (
     <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-end", marginBottom:24 }}>
       <div>
@@ -232,6 +268,7 @@ function SectionHeader({ title, sub, action }) {
 }
 
 function Card({ children, style={}, hover=false, onClick }) {
+  const T = useT();
   const [hov, setHov] = useState(false);
   return (
     <div onClick={onClick}
@@ -244,6 +281,7 @@ function Card({ children, style={}, hover=false, onClick }) {
 }
 
 function Btn({ children, variant="ghost", onClick, style={} }) {
+  const T = useT();
   const [hov, setHov] = useState(false);
   const base = { display:"inline-flex", alignItems:"center", gap:6, padding:"7px 14px", borderRadius:8, fontSize:12, fontWeight:500, cursor:"pointer", border:"none", transition:"all .15s", letterSpacing:"0.01em" };
   const variants = {
@@ -256,6 +294,7 @@ function Btn({ children, variant="ghost", onClick, style={} }) {
 
 /* ── Bar Chart ─────────────────────────────────────────────────────────────── */
 function BarChart() {
+  const T = useT();
   const max = 12;
   return (
     <div style={{ display:"flex", alignItems:"flex-end", gap:8, height:88 }}>
@@ -274,6 +313,7 @@ function BarChart() {
 
 /* ── Donut ─────────────────────────────────────────────────────────────────── */
 function Donut({ data }) {
+  const T = useT();
   const total = data.reduce((a,b) => a+b.v, 0);
   const r = 36, circ = 2*Math.PI*r;
   let off = 0;
@@ -294,6 +334,7 @@ function Donut({ data }) {
 
 /* ── Ticket progress bar ───────────────────────────────────────────────────── */
 function StepBar({ status }) {
+  const T = useT();
   const idx = TICKET_STEPS.findIndex(s => s.key === status);
   return (
     <div style={{ display:"flex", alignItems:"center", marginTop:12, gap:0 }}>
@@ -321,6 +362,7 @@ function StepBar({ status }) {
 
 /* ── Dashboard ─────────────────────────────────────────────────────────────── */
 function Dashboard({ nav }) {
+  const T = useT();
   const kpis = [
     { label:"Equipos totales",           value:10, trend:"+2",  icon:"📦", color:T.accent,  bg:T.accentSub },
     { label:"Reparaciones activas",      value:4,  trend:"2↑",  icon:"🔧", color:T.amber,   bg:T.amberBg  },
@@ -432,6 +474,9 @@ function Dashboard({ nav }) {
 
 /* ── Inventory ─────────────────────────────────────────────────────────────── */
 function Inventory() {
+  const T = useT();
+  const STATUS_CFG = mkStatus(T);
+  const CERT_CFG = mkCertCfg(T);
   const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("all");
   const [hoverRow, setHoverRow] = useState(null);
@@ -500,6 +545,9 @@ function Inventory() {
 
 /* ── Repairs ───────────────────────────────────────────────────────────────── */
 function Repairs() {
+  const T = useT();
+  const TK_CFG = mkTkCfg(T);
+  const PRI_CFG = mkPriCfg(T);
   const [selected, setSelected] = useState("TK-2401");
   const tk = TICKETS.find(t => t.id === selected);
   const { active, finished } = groupTicketsByDelivery();
@@ -594,6 +642,7 @@ function Repairs() {
 
 /* ── Certifications ─────────────────────────────────────────────────────────── */
 function Certs() {
+  const T = useT();
   const [mtrStatus, setMtrStatus] = useState(() => {
     const s = {};
     CERTS.forEach(c => { s[c.id] = c.mtrLoaded; });
@@ -622,7 +671,7 @@ function Certs() {
 
   const renderRow = (c, isDone) => {
     const isExpiredTab = tab === "expired";
-    const rowBg = isDone ? "#091509" : (isExpiredTab ? "#1d0808" : "#1c1304");
+    const rowBg = isDone ? T.greenBg : (isExpiredTab ? T.redBg : T.amberBg);
     return (
       <tr key={c.id} style={{ borderBottom:`1px solid ${T.borderSub}`, background:rowBg, transition:"background .4s" }}>
         <td style={{ padding:"10px 14px" }}>
@@ -701,7 +750,7 @@ function Certs() {
       </div>
 
       {/* Trazabilidad problem callout */}
-      <div style={{ background:"#1a1208", border:`1px solid ${T.amber}55`, borderRadius:10,
+      <div style={{ background:T.amberBg, border:`1px solid ${T.amber}55`, borderRadius:10,
         padding:"12px 16px", marginBottom:18, display:"flex", gap:10, alignItems:"flex-start" }}>
         <span style={{ fontSize:16, flexShrink:0 }}>⚠️</span>
         <div>
@@ -761,7 +810,7 @@ function Certs() {
               <>
                 <tr>
                   <td colSpan={HEADERS.length} style={{ padding:"7px 14px",
-                    background: tab==="expired" ? "#250a0a" : "#201205",
+                    background: tab==="expired" ? T.redBg : T.amberBg,
                     fontSize:10, fontWeight:700, letterSpacing:"0.07em", textTransform:"uppercase",
                     color: tab==="expired" ? T.redTxt : T.amberTxt }}>
                     🔴 Pendientes reales — {pending.length} sin MTR · Requieren certificación
@@ -773,7 +822,7 @@ function Certs() {
             {done.length > 0 && (
               <>
                 <tr>
-                  <td colSpan={HEADERS.length} style={{ padding:"7px 14px", background:"#091509",
+                  <td colSpan={HEADERS.length} style={{ padding:"7px 14px", background:T.greenBg,
                     fontSize:10, fontWeight:700, letterSpacing:"0.07em", textTransform:"uppercase",
                     color:T.greenTxt }}>
                     ✅ Ya realizados — {done.length} con MTR cargado · Pendientes de sincronizar en sistema
@@ -800,6 +849,8 @@ function Certs() {
 
 /* ── Alerts ─────────────────────────────────────────────────────────────────── */
 function Alerts({ nav }) {
+  const T = useT();
+  const STATUS_CFG = mkStatus(T);
   const critical = EQUIPMENT.filter(e => e.status === "critical");
   const notifs = [
     { pri:"critical", title:"cobas e 801 — Error E-4402 activo",          body:"Hospital Italiano · Lab Central · TK-2403 en diagnóstico",    time:"Hace 2 h",  page:"repairs" },
@@ -879,6 +930,9 @@ function Alerts({ nav }) {
 
 /* ── History ─────────────────────────────────────────────────────────────────── */
 function History() {
+  const T = useT();
+  const STATUS_CFG = mkStatus(T);
+  const CERT_CFG = mkCertCfg(T);
   const [eqId, setEqId] = useState("EQ-003");
   const eq    = EQUIPMENT.find(e => e.id === eqId);
   const items = HISTORY[eqId] || [];
@@ -987,7 +1041,8 @@ const NAV_ICONS = {
   history:   <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/></svg>,
 };
 
-function Sidebar({ page, setPage, hoverNav, setHoverNav }) {
+function Sidebar({ page, setPage, hoverNav, setHoverNav, dark, onToggle }) {
+  const T = useT();
   return (
     <div style={{ width:216, background:T.surface, borderRight:`1px solid ${T.border}`, display:"flex", flexDirection:"column", flexShrink:0 }}>
 
@@ -1036,6 +1091,27 @@ function Sidebar({ page, setPage, hoverNav, setHoverNav }) {
         })}
       </nav>
 
+      {/* Theme toggle */}
+      <div style={{ padding:"8px 14px", borderTop:`1px solid ${T.borderSub}` }}>
+        <button onClick={onToggle} style={{
+          width:"100%", display:"flex", alignItems:"center", justifyContent:"space-between",
+          padding:"7px 10px", borderRadius:8, border:`1px solid ${T.border}`,
+          background:"transparent", color:T.textMut, cursor:"pointer", fontSize:11,
+          transition:"all .15s" }}>
+          <span style={{ display:"flex", alignItems:"center", gap:7 }}>
+            <span>{dark ? "🌙" : "☀️"}</span>
+            <span>{dark ? "Modo oscuro" : "Modo claro"}</span>
+          </span>
+          <div style={{ width:32, height:18, borderRadius:99, position:"relative",
+            background: dark ? T.accent : T.border, transition:"background .2s",
+            flexShrink:0 }}>
+            <div style={{ position:"absolute", top:2, left: dark ? 14 : 2, width:14, height:14,
+              borderRadius:"50%", background:"#fff", transition:"left .2s",
+              boxShadow:"0 1px 2px #0004" }} />
+          </div>
+        </button>
+      </div>
+
       {/* User */}
       <div style={{ padding:"12px 14px", borderTop:`1px solid ${T.borderSub}` }}>
         <div style={{ display:"flex", alignItems:"center", gap:9, padding:"6px 8px", borderRadius:8, cursor:"pointer", transition:"background .1s" }}
@@ -1054,6 +1130,7 @@ function Sidebar({ page, setPage, hoverNav, setHoverNav }) {
 }
 
 function Topbar() {
+  const T = useT();
   return (
     <div style={{ background:T.surface, borderBottom:`1px solid ${T.border}`, padding:"0 28px", height:48, display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
       <div style={{ display:"flex", alignItems:"center", gap:8, fontSize:11, color:T.textMut }}>
@@ -1096,6 +1173,8 @@ function PageContainer({ page, pages }) {
 export default function App() {
   const [page, setPage] = useState("dashboard");
   const [hoverNav, setHoverNav] = useState(null);
+  const [dark, setDark] = useState(true);
+  const theme = dark ? DARK : LIGHT;
 
   const PAGES = {
     dashboard: <Dashboard nav={setPage} />,
@@ -1107,9 +1186,11 @@ export default function App() {
   };
 
   return (
-    <div style={{ display:"flex", height:"100vh", fontFamily:"-apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif", background:T.bg, color:T.text, fontSize:14, overflow:"hidden" }}>
-      <Sidebar page={page} setPage={setPage} hoverNav={hoverNav} setHoverNav={setHoverNav} />
-      <PageContainer page={page} pages={PAGES} />
-    </div>
+    <ThemeCtx.Provider value={theme}>
+      <div style={{ display:"flex", height:"100vh", fontFamily:"-apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif", background:theme.bg, color:theme.text, fontSize:14, overflow:"hidden" }}>
+        <Sidebar page={page} setPage={setPage} hoverNav={hoverNav} setHoverNav={setHoverNav} dark={dark} onToggle={() => setDark(d => !d)} />
+        <PageContainer page={page} pages={PAGES} />
+      </div>
+    </ThemeCtx.Provider>
   );
 }
