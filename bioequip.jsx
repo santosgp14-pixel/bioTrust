@@ -55,14 +55,59 @@ const TICKETS = [
 ];
 
 const CERTS = [
-  { id:"CERT-0081", equipment:"EQ-001", model:"IntelliVue MX800",  hospital:"Hospital Italiano",    type:"Calibración",             expiry:"2025-06-15", status:"valid",    issuer:"INTI" },
-  { id:"CERT-1134", equipment:"EQ-002", model:"Vivid E9",          hospital:"Sanatorio Güemes",     type:"Seguridad Eléctrica",     expiry:"2025-03-01", status:"expiring", issuer:"Bureau Veritas" },
-  { id:"CERT-0445", equipment:"EQ-003", model:"SOMATOM Drive",     hospital:"Hospital Alemán",      type:"Dosimetría",              expiry:"2025-09-10", status:"valid",    issuer:"ARN" },
-  { id:"CERT-2201", equipment:"EQ-004", model:"BC-6800 Plus",      hospital:"Clínica Santa Isabel", type:"Calibración",             expiry:"2024-12-31", status:"expired",  issuer:"INTI" },
-  { id:"CERT-0892", equipment:"EQ-005", model:"Fabius GS Premium", hospital:"Hospital Italiano",    type:"Seguridad Anestesia",     expiry:"2025-08-22", status:"valid",    issuer:"ANMAT" },
-  { id:"CERT-3312", equipment:"EQ-007", model:"Puritan Bennett 980",hospital:"Hospital Alemán",     type:"Verificación Funcional",  expiry:"2025-10-05", status:"valid",    issuer:"Dirección Brom." },
-  { id:"CERT-1098", equipment:"EQ-008", model:"cobas e 801",       hospital:"Hospital Italiano",    type:"Trazabilidad Metrológica",expiry:"2025-02-14", status:"expiring", issuer:"INTI" },
-  { id:"CERT-0341", equipment:"EQ-009", model:"TEC-5531K",         hospital:"Clínica Santa Isabel", type:"Prueba de Carga",         expiry:"2025-11-05", status:"valid",    issuer:"Bioingeniería Clínica" },
+  // ── Por vencer (expiring) ────────────────────────────────────────────────
+  { id:"CV-001", model:"INFINITY VISTA XL", serial:"6000355376", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"14 de mayo" },
+  { id:"CV-002", model:"INFINITY VISTA XL", serial:"6000866968", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-10", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"18 de mayo" },
+  { id:"CV-003", model:"INFINITY VISTA XL", serial:"6001252283", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"18 de mayo" },
+  { id:"CV-004", model:"INFINITY VISTA XL", serial:"6002535677", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-005", model:"INFINITY VISTA XL", serial:"6002731174", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"14 de mayo" },
+  { id:"CV-006", model:"INFINITY VISTA XL", serial:"6002751179", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"18 de mayo" },
+  { id:"CV-007", model:"INFINITY VISTA XL", serial:"3396191663", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"14 de mayo" },
+  { id:"CV-008", model:"QUBE",             serial:"1390-120217", hospital:"Clínica del Sol",     type:"Performance",   expiry:"2026-06-10", status:"expiring", issuer:"ANMAT",         mtrLoaded:true,  doneDate:"19 de mayo" },
+  { id:"CV-009", model:"QUBE",             serial:"1390-120216", hospital:"Clínica del Sol",     type:"Performance",   expiry:"2026-06-02", status:"expiring", issuer:"ANMAT",         mtrLoaded:false, doneDate:null },
+  { id:"CV-010", model:"XPREZZON",         serial:"1393-100491", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"5 de mayo" },
+  { id:"CV-011", model:"XPREZZON",         serial:"1393-100495", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-02", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"6 de mayo" },
+  { id:"CV-012", model:"XPREZZON",         serial:"1393-103606", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-013", model:"XPREZZON",         serial:"1393-103608", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-014", model:"XPREZZON",         serial:"1393-103610", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-25", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-015", model:"XPREZZON",         serial:"1393-103611", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"24 de abril" },
+  { id:"CV-016", model:"XPREZZON",         serial:"1393-103612", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-25", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-017", model:"XPREZZON",         serial:"1393-103613", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"24 de abril" },
+  { id:"CV-018", model:"XPREZZON",         serial:"1393-103647", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-04", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-019", model:"XPREZZON",         serial:"1393-103664", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-020", model:"XPREZZON",         serial:"1393-103665", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-021", model:"XPREZZON",         serial:"1393-103669", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-022", model:"XPREZZON",         serial:"1393-103670", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"14 de mayo" },
+  { id:"CV-023", model:"XPREZZON",         serial:"1393-103759", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-04", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-024", model:"XPREZZON",         serial:"1393-103765", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-21", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-025", model:"XPREZZON",         serial:"1393-106026", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-026", model:"XPREZZON",         serial:"1393-106054", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-11", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"8 de mayo" },
+  { id:"CV-027", model:"XPREZZON",         serial:"1393-106056", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-02", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CV-028", model:"XPREZZON",         serial:"1393-110893", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"29 de abril" },
+  { id:"CV-029", model:"MEC1200",          serial:"CC-1C120948", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-06-12", status:"expiring", issuer:"ANMAT",         mtrLoaded:true,  doneDate:"30 de abril" },
+  // ── No vigentes (expired) ────────────────────────────────────────────────
+  { id:"CE-001", model:"XPREZZON",         serial:"1393-100484", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-002", model:"XPREZZON",         serial:"1393-100490", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-003", model:"INFINITY GATEWAY", serial:"5513043468", hospital:"Clínica Santa Isabel", type:"Seg. Eléctrica", expiry:"2026-04-15", status:"expired",  issuer:"Bureau Veritas", mtrLoaded:false, doneDate:null },
+  { id:"CE-004", model:"INFINITY GATEWAY", serial:"5514303578", hospital:"Clínica Santa Isabel", type:"Seg. Eléctrica", expiry:"2026-04-15", status:"expired",  issuer:"Bureau Veritas", mtrLoaded:true,  doneDate:null },
+  { id:"CE-005", model:"MP5",              serial:"DE50189583", hospital:"Hospital Alemán",     type:"Performance",   expiry:"2026-04-20", status:"expired",  issuer:"ANMAT",         mtrLoaded:false, doneDate:null },
+  { id:"CE-006", model:"XPREZZON",         serial:"1393-103634", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-007", model:"XPREZZON",         serial:"1393-103638", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-008", model:"XPREZZON",         serial:"1393-103646", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-009", model:"XPREZZON",         serial:"1393-103671", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-010", model:"XPREZZON",         serial:"1393-103758", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
+  { id:"CE-011", model:"VS-800",           serial:"BY-17129649", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-04-10", status:"expired",  issuer:"ANMAT",         mtrLoaded:false, doneDate:null },
+  { id:"CE-012", model:"MP20",             serial:"DE54013117", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-04-18", status:"expired",  issuer:"ANMAT",         mtrLoaded:true,  doneDate:null },
+  { id:"CE-013", model:"MP20",             serial:"DE54013126", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-04-18", status:"expired",  issuer:"ANMAT",         mtrLoaded:true,  doneDate:null },
+  { id:"CE-014", model:"MP40",             serial:"DE82017003", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-04-22", status:"expired",  issuer:"ANMAT",         mtrLoaded:false, doneDate:null },
+  { id:"CE-015", model:"XPREZZON",         serial:"1393-103639", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
+  { id:"CE-016", model:"XPREZZON",         serial:"1393-103762", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
+  { id:"CE-017", model:"XPREZZON",         serial:"1393-103770", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
+  { id:"CE-018", model:"XPREZZON",         serial:"1393-106031", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-019", model:"XPREZZON",         serial:"1393-106053", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-020", model:"XPREZZON",         serial:"1393-110869", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-021", model:"XPREZZON",         serial:"1393-110885", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
+  { id:"CE-022", model:"XPREZZON",         serial:"1393-110889", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
 ];
 
 const ACTIVITY = [
@@ -549,77 +594,206 @@ function Repairs() {
 
 /* ── Certifications ─────────────────────────────────────────────────────────── */
 function Certs() {
+  const [mtrStatus, setMtrStatus] = useState(() => {
+    const s = {};
+    CERTS.forEach(c => { s[c.id] = c.mtrLoaded; });
+    return s;
+  });
+  const [tab,       setTab]       = useState("expiring");
   const [uploading, setUploading] = useState(null);
-  const [generated, setGenerated] = useState(null);
-  const [hoverRow, setHoverRow] = useState(null);
+  const [generating,setGenerating]= useState(null);
 
-  const handleUpload = id => { setUploading(id); setTimeout(() => setUploading(null), 2000); };
-  const handlePDF    = id => { setGenerated(id); setTimeout(() => setGenerated(null), 2500); };
+  const handleUploadMTR = id => {
+    setUploading(id);
+    setTimeout(() => { setMtrStatus(prev => ({ ...prev, [id]: true })); setUploading(null); }, 1500);
+  };
 
-  const { expired, expiring, valid } = getCertStatusSummary();
-  const sorted = sortCertsByStatus(CERTS);
+  const certsForTab = CERTS.filter(c => c.status === tab);
+  const pending = [...certsForTab.filter(c => !mtrStatus[c.id])].sort((a,b) => a.expiry.localeCompare(b.expiry));
+  const done    = certsForTab.filter(c =>  mtrStatus[c.id]);
+
+  const allNonValid      = CERTS.filter(c => c.status !== "valid");
+  const totalPendingReal = allNonValid.filter(c => !mtrStatus[c.id]).length;
+  const totalDone        = allNonValid.filter(c =>  mtrStatus[c.id]).length;
+  const expiringPending  = CERTS.filter(c => c.status === "expiring" && !mtrStatus[c.id]).length;
+  const expiredPending   = CERTS.filter(c => c.status === "expired"  && !mtrStatus[c.id]).length;
+  const showDoneCol      = tab === "expiring";
+  const HEADERS = ["SI/NO", "Modelo / N° Serie", "Sanatorio", "Tipo", "Vencimiento", ...(showDoneCol ? ["Realizado el"] : []), "Acción"];
+
+  const renderRow = (c, isDone) => {
+    const isExpiredTab = tab === "expired";
+    const rowBg = isDone ? "#091509" : (isExpiredTab ? "#1d0808" : "#1c1304");
+    return (
+      <tr key={c.id} style={{ borderBottom:`1px solid ${T.borderSub}`, background:rowBg, transition:"background .4s" }}>
+        <td style={{ padding:"10px 14px" }}>
+          <div style={{ width:30, height:20, borderRadius:4, display:"flex", alignItems:"center", justifyContent:"center",
+            fontSize:10, fontWeight:800, background: isDone ? T.greenBg : T.redBg,
+            color: isDone ? T.greenTxt : T.redTxt, border:`1px solid ${isDone ? T.green+"33" : T.red+"33"}` }}>
+            {isDone ? "SI" : "NO"}
+          </div>
+        </td>
+        <td style={{ padding:"10px 14px" }}>
+          <div style={{ fontWeight:500, color:T.text, fontSize:12 }}>{c.model}</div>
+          <div style={{ fontSize:10, color:T.textMut }}>{c.serial}</div>
+        </td>
+        <td style={{ padding:"10px 14px", color:T.textSub, fontSize:11 }}>{c.hospital}</td>
+        <td style={{ padding:"10px 14px", color:T.textSub, fontSize:11 }}>{c.type}</td>
+        <td style={{ padding:"10px 14px", fontSize:11, fontWeight: isDone?400:600,
+          color: isDone ? T.textMut : (isExpiredTab ? T.redTxt : T.amberTxt) }}>
+          {c.expiry.split("-").reverse().join("/")}
+        </td>
+        {showDoneCol && (
+          <td style={{ padding:"10px 14px", fontSize:11 }}>
+            {isDone
+              ? <span style={{ color:T.greenTxt }}>✓ se realizó el {c.doneDate || "—"}</span>
+              : <span style={{ color:T.textMut }}>—</span>}
+          </td>
+        )}
+        <td style={{ padding:"10px 14px" }}>
+          {!isDone ? (
+            <button onClick={() => handleUploadMTR(c.id)} style={{
+              padding:"4px 11px", background: uploading===c.id ? T.accentSub : T.surface,
+              border:`1px solid ${uploading===c.id ? T.accent : T.border}`,
+              borderRadius:6, fontSize:10, cursor:"pointer",
+              color: uploading===c.id ? T.accent : T.textSub,
+              transition:"all .15s", whiteSpace:"nowrap" }}>
+              {uploading===c.id ? "⟳ Cargando..." : "↑ Cargar MTR"}
+            </button>
+          ) : (
+            <button onClick={() => { setGenerating(c.id); setTimeout(()=>setGenerating(null),2000); }} style={{
+              padding:"4px 11px", background: generating===c.id ? T.greenBg : T.surface,
+              border:`1px solid ${generating===c.id ? T.green : T.border}`,
+              borderRadius:6, fontSize:10, cursor:"pointer",
+              color: generating===c.id ? T.greenTxt : T.textMut,
+              transition:"all .15s" }}>
+              {generating===c.id ? "⟳ Generando..." : "↓ PDF"}
+            </button>
+          )}
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <div>
-      <SectionHeader title="Certificaciones" sub={`${CERTS.length} certificados registrados`}
-        action={<Btn variant="primary">+ Nueva certificación</Btn>} />
+      <SectionHeader
+        title="Certificaciones — Trazabilidad SGEM"
+        sub={`${totalPendingReal} pendientes reales · ${totalDone} con MTR cargado este ciclo`}
+        action={<Btn variant="primary">+ Nueva certificación</Btn>}
+      />
 
-      <div style={{ display:"grid", gridTemplateColumns:"repeat(3,1fr)", gap:12, marginBottom:20 }}>
+      {/* Stats */}
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:12, marginBottom:18 }}>
         {[
-          { count:expired,  label:"Vencidos",           color:T.red,   bg:T.redBg,   icon:"🔴" },
-          { count:expiring, label:"Vencen en ≤60 días", color:T.amber, bg:T.amberBg, icon:"🟡" },
-          { count:valid,    label:"Vigentes",            color:T.green, bg:T.greenBg, icon:"🟢" },
+          { count:totalPendingReal, label:"Pendientes reales",      color:T.red,   sub:"Sin MTR cargado" },
+          { count:totalDone,        label:"Realizados este ciclo",  color:T.green, sub:"MTR registrado" },
+          { count:expiredPending,   label:"No vigentes pend.",      color:T.red,   sub:"Vencidas sin renovar" },
+          { count:expiringPending,  label:"Por vencer pend.",       color:T.amber, sub:"Próximas sin MTR" },
         ].map(s => (
-          <Card key={s.label} hover style={{ padding:"18px 20px", display:"flex", alignItems:"center", gap:14 }}>
-            <div style={{ width:42, height:42, borderRadius:10, background:s.bg, display:"flex", alignItems:"center", justifyContent:"center", fontSize:18 }}>{s.icon}</div>
+          <Card key={s.label} style={{ padding:"16px 18px", display:"flex", alignItems:"center", gap:14 }}>
+            <div style={{ fontSize:30, fontWeight:700, color:s.color, letterSpacing:"-0.04em", lineHeight:1 }}>{s.count}</div>
             <div>
-              <div style={{ fontSize:26, fontWeight:700, color:s.color, lineHeight:1, letterSpacing:"-0.03em" }}>{s.count}</div>
-              <div style={{ fontSize:11, color:T.textMut, marginTop:2 }}>{s.label}</div>
+              <div style={{ fontSize:12, fontWeight:600, color:T.text }}>{s.label}</div>
+              <div style={{ fontSize:10, color:T.textMut, marginTop:2 }}>{s.sub}</div>
             </div>
           </Card>
         ))}
       </div>
 
+      {/* Trazabilidad problem callout */}
+      <div style={{ background:"#1a1208", border:`1px solid ${T.amber}55`, borderRadius:10,
+        padding:"12px 16px", marginBottom:18, display:"flex", gap:10, alignItems:"flex-start" }}>
+        <span style={{ fontSize:16, flexShrink:0 }}>⚠️</span>
+        <div>
+          <div style={{ fontSize:12, fontWeight:600, color:T.amberTxt, marginBottom:3 }}>
+            Problema de trazabilidad: {totalDone} equipos ya certificados aún figuran en las listas de pendientes
+          </div>
+          <div style={{ fontSize:11, color:T.textSub, lineHeight:1.6 }}>
+            Tienen MTR cargado (columna <span style={{color:T.greenTxt,fontWeight:700}}>"SI"</span>) pero el sistema externo no los sincroniza.
+            Esto provoca <strong style={{color:T.amberTxt}}>certificaciones repetidas, envíos innecesarios de personal y errores de facturación</strong>.
+            Cargar el MTR aquí actualiza el estado en tiempo real.
+          </div>
+        </div>
+      </div>
+
+      {/* Tabs + export bar */}
+      <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:14 }}>
+        <div style={{ display:"flex", gap:0, background:T.surface, borderRadius:10, padding:4, border:`1px solid ${T.border}` }}>
+          {[
+            { key:"expiring", label:"Por Vencer",  pend:expiringPending },
+            { key:"expired",  label:"No Vigentes", pend:expiredPending  },
+          ].map(t => (
+            <button key={t.key} onClick={() => setTab(t.key)} style={{
+              padding:"6px 18px", borderRadius:8, border:"none", cursor:"pointer",
+              background: tab===t.key ? T.card : "transparent",
+              color: tab===t.key ? T.text : T.textMut,
+              fontSize:12, fontWeight: tab===t.key ? 600 : 400,
+              transition:"all .15s", display:"flex", alignItems:"center", gap:7,
+              boxShadow: tab===t.key ? "0 1px 3px #0005" : "none" }}>
+              {t.label}
+              <span style={{ fontSize:10, padding:"1px 7px", borderRadius:99, fontWeight:700,
+                background: t.pend>0 ? T.redBg : T.greenBg,
+                color: t.pend>0 ? T.redTxt : T.greenTxt }}>
+                {t.pend > 0 ? `${t.pend} pend.` : "✓ ok"}
+              </span>
+            </button>
+          ))}
+        </div>
+        <div style={{ display:"flex", gap:8 }}>
+          <Btn>↓ Exportar pendientes</Btn>
+          <Btn>🖨 Imprimir planilla</Btn>
+        </div>
+      </div>
+
+      {/* Single table with section dividers */}
       <Card style={{ overflow:"hidden" }}>
         <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
           <thead>
             <tr style={{ borderBottom:`1px solid ${T.border}` }}>
-              {["Equipo","Hospital","Tipo de certificación","Ente emisor","Vencimiento","Estado","Acciones"].map(h => (
-                <th key={h} style={{ padding:"10px 16px", textAlign:"left", fontSize:10, fontWeight:600, color:T.textMut, textTransform:"uppercase", letterSpacing:"0.06em", whiteSpace:"nowrap" }}>{h}</th>
+              {HEADERS.map(h => (
+                <th key={h} style={{ padding:"9px 14px", textAlign:"left", fontSize:10, fontWeight:600,
+                  color:T.textMut, textTransform:"uppercase", letterSpacing:"0.06em", whiteSpace:"nowrap" }}>{h}</th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {sorted.map((c,i) => (
-              <tr key={c.id}
-                onMouseEnter={() => setHoverRow(i)} onMouseLeave={() => setHoverRow(null)}
-                style={{ borderBottom:`1px solid ${T.borderSub}`, background: hoverRow===i ? T.surface : "transparent", transition:"background .1s" }}>
-                <td style={{ padding:"12px 16px" }}>
-                  <div style={{ fontWeight:500, color:T.text }}>{c.model}</div>
-                  <div style={{ fontSize:10, color:T.textMut }}>{c.equipment}</div>
-                </td>
-                <td style={{ padding:"12px 16px", color:T.textSub, fontSize:11 }}>{c.hospital}</td>
-                <td style={{ padding:"12px 16px", color:T.textSub }}>{c.type}</td>
-                <td style={{ padding:"12px 16px", color:T.textMut, fontSize:11 }}>{c.issuer}</td>
-                <td style={{ padding:"12px 16px", fontWeight: c.status!=="valid" ? 600 : 400, color: c.status==="expired" ? T.redTxt : c.status==="expiring" ? T.amberTxt : T.textSub, fontSize:12 }}>{c.expiry}</td>
-                <td style={{ padding:"12px 16px" }}><Pill cfg={CERT_CFG[c.status]} dot /></td>
-                <td style={{ padding:"12px 16px" }}>
-                  <div style={{ display:"flex", gap:6 }}>
-                    <button onClick={() => handleUpload(c.id)}
-                      style={{ padding:"4px 10px", background: uploading===c.id ? T.greenBg : T.surface, border:`1px solid ${uploading===c.id ? T.green : T.border}`, borderRadius:6, fontSize:10, cursor:"pointer", color: uploading===c.id ? T.greenTxt : T.textSub, transition:"all .2s", whiteSpace:"nowrap" }}>
-                      {uploading===c.id ? "✓ Cargado" : "↑ MTR"}
-                    </button>
-                    <button onClick={() => handlePDF(c.id)}
-                      style={{ padding:"4px 10px", background: generated===c.id ? T.accentSub : T.surface, border:`1px solid ${generated===c.id ? T.accent : T.border}`, borderRadius:6, fontSize:10, cursor:"pointer", color: generated===c.id ? T.accent : T.textSub, transition:"all .2s" }}>
-                      {generated===c.id ? "⟳ PDF..." : "PDF"}
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {pending.length > 0 && (
+              <>
+                <tr>
+                  <td colSpan={HEADERS.length} style={{ padding:"7px 14px",
+                    background: tab==="expired" ? "#250a0a" : "#201205",
+                    fontSize:10, fontWeight:700, letterSpacing:"0.07em", textTransform:"uppercase",
+                    color: tab==="expired" ? T.redTxt : T.amberTxt }}>
+                    🔴 Pendientes reales — {pending.length} sin MTR · Requieren certificación
+                  </td>
+                </tr>
+                {pending.map(c => renderRow(c, false))}
+              </>
+            )}
+            {done.length > 0 && (
+              <>
+                <tr>
+                  <td colSpan={HEADERS.length} style={{ padding:"7px 14px", background:"#091509",
+                    fontSize:10, fontWeight:700, letterSpacing:"0.07em", textTransform:"uppercase",
+                    color:T.greenTxt }}>
+                    ✅ Ya realizados — {done.length} con MTR cargado · Pendientes de sincronizar en sistema
+                  </td>
+                </tr>
+                {done.map(c => renderRow(c, true))}
+              </>
+            )}
+            {pending.length === 0 && done.length === 0 && (
+              <tr><td colSpan={HEADERS.length} style={{ padding:"40px", textAlign:"center", color:T.textMut }}>Sin registros</td></tr>
+            )}
           </tbody>
         </table>
       </Card>
+
+      {pending.length === 0 && done.length > 0 && (
+        <div style={{ textAlign:"center", padding:"14px", marginTop:6 }}>
+          <span style={{ color:T.greenTxt, fontSize:12, fontWeight:600 }}>✅ Sin pendientes reales en esta lista — todos los equipos tienen MTR cargado</span>
+        </div>
+      )}
     </div>
   );
 }
