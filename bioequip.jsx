@@ -65,6 +65,8 @@ const ThemeCtx  = createContext(DARK);
 const useT      = () => useContext(ThemeCtx);
 const ClientCtx = createContext(null);
 const useClient = () => useContext(ClientCtx);
+const RoleCtx   = createContext(null);          // "admin" | "client"
+const useRole   = () => useContext(RoleCtx);
 
 /* ── Data ──────────────────────────────────────────────────────────────────── */
 const CLIENTS = [
@@ -301,6 +303,96 @@ function Btn({ children, variant="ghost", onClick, style={} }) {
   return <button onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ ...base, ...variants[variant], ...style }}>{children}</button>;
 }
 
+/* ── Role Picker (first screen) ───────────────────────────────────────────── */
+function RolePicker({ onSelect, dark, onToggle }) {
+  const T = useT();
+  const [hov, setHov] = useState(null);
+  const roles = [
+    {
+      id: "admin",
+      title: "BioTrust Ingeniería",
+      sub: "Acceso interno — equipo técnico",
+      desc: "Gestión completa de todos los clientes, equipos, tickets y certificaciones.",
+      color: T.accent,
+      bg: T.accentSub,
+      border: T.accent,
+      icon: (
+        <svg width={28} height={28} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+      ),
+      badge: "Equipo BioTrust",
+      badgeColor: T.accent,
+    },
+    {
+      id: "client",
+      title: "Portal de Clientes",
+      sub: "Acceso institucional — sanatorios y hospitales",
+      desc: "Vista personalizada con equipos, certificaciones y tickets de tu institución.",
+      color: T.green,
+      bg: T.greenBg,
+      border: T.green,
+      icon: (
+        <svg width={28} height={28} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+          <polyline points="9 22 9 12 15 12 15 22"/>
+        </svg>
+      ),
+      badge: "Portal Cliente",
+      badgeColor: T.green,
+    },
+  ];
+  return (
+    <div style={{ minHeight:"100vh", background:T.bg, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:32 }}>
+      {/* Header */}
+      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:8 }}>
+        <div style={{ width:42, height:42, borderRadius:11, background:T.accentSub, border:`1px solid ${T.accent}44`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth={2} strokeLinecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div>
+          <div style={{ fontSize:22, fontWeight:800, color:T.text, letterSpacing:"-0.03em" }}>BioEquip</div>
+          <div style={{ fontSize:11, color:T.textMut }}>Plataforma de Gestión Biomédica</div>
+        </div>
+      </div>
+      <p style={{ fontSize:13, color:T.textMut, marginBottom:40 }}>¿Cómo querés ingresar?</p>
+
+      <div style={{ display:"flex", gap:20, width:"100%", maxWidth:680 }}>
+        {roles.map(r => (
+          <div key={r.id}
+            onClick={() => onSelect(r.id)}
+            onMouseEnter={() => setHov(r.id)}
+            onMouseLeave={() => setHov(null)}
+            style={{
+              flex:1, background: hov===r.id ? T.cardHov : T.card,
+              border:`2px solid ${hov===r.id ? r.border : T.borderSub}`,
+              borderRadius:16, padding:"30px 28px", cursor:"pointer",
+              transition:"all .15s", position:"relative", overflow:"hidden",
+            }}>
+            <div style={{ position:"absolute", top:0, left:0, right:0, height:4, background:r.border, borderRadius:"16px 16px 0 0" }} />
+            <div style={{ width:52, height:52, borderRadius:14, background:r.bg, border:`1px solid ${r.border}44`,
+              display:"flex", alignItems:"center", justifyContent:"center",
+              color:r.color, marginBottom:18 }}>{r.icon}</div>
+            <div style={{ fontSize:11, fontWeight:700, color:r.badgeColor, textTransform:"uppercase",
+              letterSpacing:"0.08em", marginBottom:6 }}>{r.badge}</div>
+            <div style={{ fontSize:17, fontWeight:700, color:T.text, marginBottom:6, letterSpacing:"-0.02em" }}>{r.title}</div>
+            <div style={{ fontSize:11.5, color:T.textMut, lineHeight:1.55, marginBottom:20 }}>{r.desc}</div>
+            <div style={{ display:"flex", alignItems:"center", gap:6, fontSize:12, fontWeight:600, color:r.color,
+              opacity: hov===r.id ? 1 : 0.55, transition:"opacity .15s" }}>
+              Ingresar <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} strokeLinecap="round"><line x1={5} y1={12} x2={19} y2={12}/><polyline points="12 5 19 12 12 19"/></svg>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* dark/light toggle bottom */}
+      <button onClick={onToggle} style={{ marginTop:36, background:"none", border:`1px solid ${T.border}`, borderRadius:8,
+        padding:"6px 14px", color:T.textMut, fontSize:11, cursor:"pointer", display:"flex", alignItems:"center", gap:6 }}>
+        {dark ? "🌙 Modo oscuro" : "☀️ Modo claro"} — cambiar
+      </button>
+    </div>
+  );
+}
+
 /* ── Client Picker (entry screen) ─────────────────────────────────────────── */
 function ClientPicker({ onSelect }) {
   const T   = useT();
@@ -435,13 +527,91 @@ function StepBar({ status }) {
    PAGES
 ═══════════════════════════════════════════════════════════════════════════ */
 
+/* ── Clients Overview (admin page) ────────────────────────────────────────── */
+function ClientsOverview({ nav }) {
+  const T = useT();
+  const [hov, setHov] = useState(null);
+  return (
+    <div>
+      <SectionHeader title="Clientes" sub={`${CLIENTS.length} instituciones activas`}
+        action={<Btn variant="primary">+ Nuevo cliente</Btn>} />
+
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:16 }}>
+        {CLIENTS.map(cl => {
+          const equip   = EQUIPMENT.filter(e => e.clientId === cl.id);
+          const tickets = TICKETS.filter(t => t.clientId === cl.id);
+          const certs   = CERTS.filter(c => c.clientId === cl.id);
+          const critical = equip.filter(e => e.status === "critical").length;
+          const certsNOK = certs.filter(c => c.status !== "valid").length;
+          const activeT  = tickets.filter(t => t.status !== "delivered").length;
+          return (
+            <div key={cl.id}
+              onMouseEnter={() => setHov(cl.id)}
+              onMouseLeave={() => setHov(null)}
+              style={{ background: hov===cl.id ? T.cardHov : T.card,
+                border:`2px solid ${hov===cl.id ? cl.color : T.borderSub}`,
+                borderRadius:14, padding:"22px 24px", position:"relative",
+                overflow:"hidden", transition:"all .15s" }}>
+              <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:cl.color }} />
+              {/* Header */}
+              <div style={{ display:"flex", alignItems:"flex-start", gap:14, marginBottom:16 }}>
+                <div style={{ width:46, height:46, borderRadius:12, background:cl.color+"22",
+                  border:`1px solid ${cl.color}44`, display:"flex", alignItems:"center",
+                  justifyContent:"center", fontSize:15, fontWeight:800, color:cl.color, flexShrink:0 }}>
+                  {cl.initials}
+                </div>
+                <div style={{ flex:1 }}>
+                  <div style={{ fontWeight:700, fontSize:15, color:T.text, marginBottom:2 }}>{cl.name}</div>
+                  <div style={{ fontSize:11, color:T.textMut }}>{cl.city} · {cl.contact}</div>
+                </div>
+                <span style={{ fontSize:9.5, fontWeight:700, padding:"3px 9px", borderRadius:99,
+                  background: cl.plan==="Abono Premium" ? T.accentSub : cl.plan==="Abono Estándar" ? T.blueBg : T.amberBg,
+                  color: cl.plan==="Abono Premium" ? T.accent : cl.plan==="Abono Estándar" ? T.blue : T.amber,
+                  border:`1px solid currentColor`, flexShrink:0 }}>{cl.plan}</span>
+              </div>
+              {/* KPIs */}
+              <div style={{ display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:8, marginBottom:16 }}>
+                {[
+                  { label:"Equipos",   value:equip.length,  color:T.accent,   warn:false },
+                  { label:"Activos",   value:activeT,       color:activeT>0?T.amber:T.textMut, warn:activeT>0 },
+                  { label:"Críticos",  value:critical,      color:critical>0?T.red:T.green, warn:critical>0 },
+                  { label:"Certs ⚠️",  value:certsNOK,      color:certsNOK>0?T.red:T.green, warn:certsNOK>0 },
+                ].map(s => (
+                  <div key={s.label} style={{ background:T.surface, borderRadius:8, padding:"8px 10px",
+                    border:`1px solid ${s.warn ? s.color+"44" : T.borderSub}` }}>
+                    <div style={{ fontSize:19, fontWeight:700, color:s.color, lineHeight:1 }}>{s.value}</div>
+                    <div style={{ fontSize:9.5, color:T.textMut, marginTop:2 }}>{s.label}</div>
+                  </div>
+                ))}
+              </div>
+              {/* Services */}
+              <div style={{ display:"flex", flexWrap:"wrap", gap:5, marginBottom:14 }}>
+                {cl.services.map(s => (
+                  <span key={s} style={{ fontSize:10, background:T.surface, border:`1px solid ${T.border}`,
+                    color:T.textMut, padding:"2px 9px", borderRadius:99 }}>{s}</span>
+                ))}
+              </div>
+              {/* Actions */}
+              <div style={{ display:"flex", gap:8 }}>
+                <button onClick={() => nav("inventory")} style={{ flex:1, padding:"7px 0", borderRadius:8, border:`1px solid ${T.border}`, background:"transparent", color:T.textSub, fontSize:11, fontWeight:500, cursor:"pointer" }}>Ver inventario</button>
+                <button onClick={() => nav("certs")}     style={{ flex:1, padding:"7px 0", borderRadius:8, border:`1px solid ${T.border}`, background:"transparent", color:T.textSub, fontSize:11, fontWeight:500, cursor:"pointer" }}>Certificaciones</button>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 /* ── Dashboard ─────────────────────────────────────────────────────────────── */
 function Dashboard({ nav }) {
   const T = useT();
+  const role = useRole();
   const { clientId } = useClient();
-  const myEquip   = EQUIPMENT.filter(e => e.clientId === clientId);
-  const myTickets = TICKETS.filter(t => t.clientId === clientId);
-  const myCerts   = CERTS.filter(c => c.clientId === clientId);
+  const myEquip   = role==="admin" ? EQUIPMENT : EQUIPMENT.filter(e => e.clientId === clientId);
+  const myTickets = role==="admin" ? TICKETS   : TICKETS.filter(t => t.clientId === clientId);
+  const myCerts   = role==="admin" ? CERTS     : CERTS.filter(c => c.clientId === clientId);
   const kpis = [
     { label:"Equipos totales",           value:myEquip.length,                                    trend:"",     icon:"📦", color:T.accent,  bg:T.accentSub },
     { label:"Reparaciones activas",      value:myTickets.filter(t=>t.status!=="delivered").length, trend:"",     icon:"🔧", color:T.amber,   bg:T.amberBg  },
@@ -560,9 +730,10 @@ function Inventory() {
   const T = useT();
   const STATUS_CFG = mkStatus(T);
   const CERT_CFG = mkCertCfg(T);
+  const role = useRole();
   const { clientId } = useClient();
   const [search, setSearch] = useState("");
-  const myEquip = EQUIPMENT.filter(e => e.clientId === clientId);
+  const myEquip = role==="admin" ? EQUIPMENT : EQUIPMENT.filter(e => e.clientId === clientId);
   const [filter, setFilter] = useState("all");
   const [hoverRow, setHoverRow] = useState(null);
 
@@ -636,8 +807,9 @@ function Repairs() {
   const T = useT();
   const TK_CFG = mkTkCfg(T);
   const PRI_CFG = mkPriCfg(T);
+  const role = useRole();
   const { clientId } = useClient();
-  const myTickets = TICKETS.filter(t => t.clientId === clientId);
+  const myTickets = role==="admin" ? TICKETS : TICKETS.filter(t => t.clientId === clientId);
   const [selected, setSelected] = useState(null);
   const selId = selected || (myTickets[0]?.id ?? null);
   const tk = myTickets.find(t => t.id === selId);
@@ -742,8 +914,9 @@ function Repairs() {
 /* ── Certifications ─────────────────────────────────────────────────────────── */
 function Certs() {
   const T = useT();
+  const role = useRole();
   const { clientId } = useClient();
-  const clientCerts = CERTS.filter(c => c.clientId === clientId);
+  const clientCerts = role==="admin" ? CERTS : CERTS.filter(c => c.clientId === clientId);
   const [mtrStatus, setMtrStatus] = useState(() => {
     const s = {};
     CERTS.forEach(c => { s[c.id] = c.mtrLoaded; });
@@ -952,8 +1125,11 @@ function Certs() {
 function Alerts({ nav }) {
   const T = useT();
   const STATUS_CFG = mkStatus(T);
+  const role = useRole();
   const { clientId } = useClient();
-  const critical = EQUIPMENT.filter(e => e.clientId === clientId && e.status === "critical");
+  const critical = role==="admin"
+    ? EQUIPMENT.filter(e => e.status === "critical")
+    : EQUIPMENT.filter(e => e.clientId === clientId && e.status === "critical");
   const notifs = [
     { pri:"critical", title:"cobas e 801 — Error E-4402 activo",          body:"Hospital Italiano · Lab Central · TK-2403 en diagnóstico",    time:"Hace 2 h",  page:"repairs" },
     { pri:"critical", title:"Vivid E9 — Transductor deteriorado",          body:"Sanatorio Güemes · Cardiología · TK-2402 esperando repuesto", time:"Hace 5 h",  page:"repairs" },
@@ -1035,8 +1211,9 @@ function History() {
   const T = useT();
   const STATUS_CFG = mkStatus(T);
   const CERT_CFG = mkCertCfg(T);
+  const role = useRole();
   const { clientId } = useClient();
-  const myEquip = EQUIPMENT.filter(e => e.clientId === clientId);
+  const myEquip = role==="admin" ? EQUIPMENT : EQUIPMENT.filter(e => e.clientId === clientId);
   const [eqId, setEqId] = useState(() => myEquip[0]?.id ?? "EQ-003");
   const eq    = EQUIPMENT.find(e => e.id === eqId);
   const items = HISTORY[eqId] || [];
@@ -1128,16 +1305,18 @@ function History() {
    ROOT APP
 ═══════════════════════════════════════════════════════════════════════════ */
 const NAV = [
-  { id:"dashboard", label:"Dashboard",          shortcut:"D" },
-  { id:"inventory", label:"Inventario",          shortcut:"I" },
-  { id:"repairs",   label:"Taller",              shortcut:"T" },
-  { id:"certs",     label:"Certificaciones",     shortcut:"C" },
-  { id:"alerts",    label:"Alertas",             shortcut:"A" },
-  { id:"history",   label:"Historial",           shortcut:"H" },
+  { id:"dashboard", label:"Dashboard",       shortcut:"D" },
+  { id:"clientes",  label:"Clientes",        shortcut:"L", adminOnly:true },
+  { id:"inventory", label:"Inventario",      shortcut:"I" },
+  { id:"repairs",   label:"Taller",          shortcut:"T" },
+  { id:"certs",     label:"Certificaciones", shortcut:"C" },
+  { id:"alerts",    label:"Alertas",         shortcut:"A" },
+  { id:"history",   label:"Historial",       shortcut:"H" },
 ];
 
 const NAV_ICONS = {
   dashboard: <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><rect x={3} y={3} width={7} height={7} rx={1}/><rect x={14} y={3} width={7} height={7} rx={1}/><rect x={3} y={14} width={7} height={7} rx={1}/><rect x={14} y={14} width={7} height={7} rx={1}/></svg>,
+  clientes:  <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx={9} cy={7} r={4}/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
   inventory: <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1={12} y1={22.08} x2={12} y2={12}/></svg>,
   repairs:   <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>,
   certs:     <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1={16} y1={13} x2={8} y2={13}/><line x1={16} y1={17} x2={8} y2={17}/></svg>,
@@ -1145,24 +1324,40 @@ const NAV_ICONS = {
   history:   <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><polyline points="12 8 12 12 14 14"/><path d="M3.05 11a9 9 0 1 1 .5 4m-.5 5v-5h5"/></svg>,
 };
 
-function Sidebar({ page, setPage, hoverNav, setHoverNav, dark, onToggle }) {
-  const T = useT();
+function Sidebar({ page, setPage, hoverNav, setHoverNav, dark, onToggle, onLogout }) {
+  const T    = useT();
+  const role = useRole();
+  const { clientId } = useClient();
+  const client = CLIENTS.find(c => c.id === clientId);
+  const visibleNav = NAV.filter(item => !item.adminOnly || role === "admin");
   return (
     <div style={{ width:216, background:T.surface, borderRight:`1px solid ${T.border}`, display:"flex", flexDirection:"column", flexShrink:0 }}>
 
-      {/* Logo */}
-      <div style={{ padding:"18px 18px 14px", borderBottom:`1px solid ${T.borderSub}` }}>
+      {/* Logo + role badge */}
+      <div style={{ padding:"16px 18px 12px", borderBottom:`1px solid ${T.borderSub}` }}>
         <div style={{ display:"flex", alignItems:"center", gap:10 }}>
           <div style={{ width:30, height:30, borderRadius:8, background:T.accentSub, border:`1px solid ${T.accent}44`, display:"flex", alignItems:"center", justifyContent:"center" }}>
-            <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth={2} strokeLinecap="round">
-              <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-            </svg>
+            <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth={2} strokeLinecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
           </div>
           <div>
             <div style={{ fontSize:13, fontWeight:700, color:T.text, letterSpacing:"-0.02em" }}>BioEquip</div>
-            <div style={{ fontSize:9.5, color:T.textMut, letterSpacing:"0.02em" }}>Platform v2.4</div>
+            <div style={{ fontSize:9, color: role==="admin" ? T.accent : T.green, fontWeight:600, textTransform:"uppercase", letterSpacing:"0.06em" }}>
+              {role==="admin" ? "Equipo BioTrust" : "Portal Cliente"}
+            </div>
           </div>
         </div>
+        {/* Client badge for client mode */}
+        {role==="client" && client && (
+          <div style={{ display:"flex", alignItems:"center", gap:7, marginTop:10, padding:"6px 8px",
+            background:T.bg, borderRadius:7, border:`1px solid ${T.borderSub}` }}>
+            <div style={{ width:20, height:20, borderRadius:5, background:client.color+"22",
+              display:"flex", alignItems:"center", justifyContent:"center",
+              fontSize:8, fontWeight:800, color:client.color }}>{client.initials}</div>
+            <div style={{ flex:1, minWidth:0 }}>
+              <div style={{ fontSize:10.5, fontWeight:600, color:T.text, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>{client.name}</div>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Search shortcut */}
@@ -1177,7 +1372,7 @@ function Sidebar({ page, setPage, hoverNav, setHoverNav, dark, onToggle }) {
       {/* Nav */}
       <nav style={{ padding:"6px 10px", flex:1 }}>
         <div style={{ fontSize:9.5, color:T.textMut, textTransform:"uppercase", letterSpacing:"0.1em", padding:"8px 6px 6px", fontWeight:600 }}>Módulos</div>
-        {NAV.map(item => {
+        {visibleNav.map(item => {
           const active = page === item.id;
           return (
             <button key={item.id}
@@ -1216,38 +1411,56 @@ function Sidebar({ page, setPage, hoverNav, setHoverNav, dark, onToggle }) {
         </button>
       </div>
 
-      {/* User */}
+      {/* User + logout */}
       <div style={{ padding:"12px 14px", borderTop:`1px solid ${T.borderSub}` }}>
-        <div style={{ display:"flex", alignItems:"center", gap:9, padding:"6px 8px", borderRadius:8, cursor:"pointer", transition:"background .1s" }}
-          onMouseEnter={e => e.currentTarget.style.background=T.bg}
-          onMouseLeave={e => e.currentTarget.style.background="transparent"}>
-          <Avatar initials="DF" color={T.accent} />
+        <div style={{ display:"flex", alignItems:"center", gap:9, padding:"6px 8px", borderRadius:8 }}>
+          <Avatar initials={role==="admin" ? "DF" : client?.initials || "?"} color={role==="admin" ? T.accent : client?.color || T.green} />
           <div style={{ flex:1, overflow:"hidden" }}>
-            <div style={{ fontSize:12, fontWeight:500, color:T.text, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>Diego Ferreyra</div>
-            <div style={{ fontSize:10, color:T.textMut }}>Ing. Biomédico</div>
+            <div style={{ fontSize:12, fontWeight:500, color:T.text, whiteSpace:"nowrap", overflow:"hidden", textOverflow:"ellipsis" }}>
+              {role==="admin" ? "Diego Ferreyra" : client?.name || ""}
+            </div>
+            <div style={{ fontSize:10, color:T.textMut }}>{role==="admin" ? "Ing. Biomédico" : client?.contact || ""}</div>
           </div>
-          <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke={T.textMut} strokeWidth={2} strokeLinecap="round"><circle cx={12} cy={12} r={1}/><circle cx={19} cy={12} r={1}/><circle cx={5} cy={12} r={1}/></svg>
         </div>
+        <button onClick={onLogout} style={{ width:"100%", marginTop:6, padding:"6px 10px", borderRadius:7,
+          border:`1px solid ${T.border}`, background:"transparent", color:T.textMut,
+          fontSize:11, cursor:"pointer", display:"flex", alignItems:"center", gap:6,
+          justifyContent:"center" }}>
+          <svg width={11} height={11} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1={21} y1={12} x2={9} y2={12}/></svg>
+          Salir
+        </button>
       </div>
     </div>
   );
 }
 
-function Topbar({ onChangeClient }) {
-  const T = useT();
+function Topbar() {
+  const T    = useT();
+  const role = useRole();
   const { clientId } = useClient();
   const client = CLIENTS.find(c => c.id === clientId);
   return (
     <div style={{ background:T.surface, borderBottom:`1px solid ${T.border}`, padding:"0 28px", height:48, display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
       <div style={{ display:"flex", alignItems:"center", gap:8, fontSize:11, color:T.textMut }}>
-        <span>Bioingeniería Clínica Argentina</span>
-        {client && <>
-          <span style={{ color:T.border }}>·</span>
-          <span style={{ display:"flex", alignItems:"center", gap:5 }}>
-            <span style={{ width:7, height:7, borderRadius:"50%", background:client.color, flexShrink:0 }} />
-            <span style={{ fontWeight:600, color:T.textSub }}>{client.name}</span>
-          </span>
-        </>}
+        {role==="admin" ? (
+          <>
+            <span style={{ fontWeight:600, color:T.accent }}>BioTrust Ingeniería</span>
+            <span style={{ color:T.border }}>·</span>
+            <span>Gestión integral &mdash; todos los clientes</span>
+          </>
+        ) : (
+          <>
+            <span>Portal de Clientes</span>
+            {client && <>
+              <span style={{ color:T.border }}>·</span>
+              <span style={{ display:"flex", alignItems:"center", gap:5 }}>
+                <span style={{ width:7, height:7, borderRadius:"50%", background:client.color, flexShrink:0 }} />
+                <span style={{ fontWeight:600, color:T.textSub }}>{client.name}</span>
+              </span>
+            </>
+            }
+          </>
+        )}
       </div>
       <div style={{ display:"flex", gap:8, alignItems:"center" }}>
         <div style={{ display:"flex", alignItems:"center", gap:6, fontSize:11, color:T.textMut }}>
@@ -1268,10 +1481,10 @@ function Topbar({ onChangeClient }) {
   );
 }
 
-function PageContainer({ page, pages, onChangeClient }) {
+function PageContainer({ page, pages }) {
   return (
     <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-      <Topbar onChangeClient={onChangeClient} />
+      <Topbar />
       <div style={{ flex:1, overflow:"auto", padding:"28px 32px" }}>
         <div style={{ maxWidth:1100 }}>
           {pages[page]}
@@ -1285,13 +1498,16 @@ export default function App() {
   const [page,     setPage]     = useState("dashboard");
   const [hoverNav, setHoverNav] = useState(null);
   const [dark,     setDark]     = useState(true);
+  const [role,     setRole]     = useState(null);      // null | "admin" | "client"
   const [clientId, setClientId] = useState(null);
   const theme = dark ? DARK : LIGHT;
 
-  const handleSelectClient = id => { setClientId(id); setPage("dashboard"); };
-  const handleChangeClient = ()  => setClientId(null);
+  const handlePickRole    = r  => { setRole(r); setPage(r==="admin" ? "clientes" : "dashboard"); };
+  const handleSelectClient= id => { setClientId(id); setPage("dashboard"); };
+  const handleLogout      = () => { setRole(null); setClientId(null); setPage("dashboard"); };
 
   const PAGES = {
+    clientes:  <ClientsOverview nav={setPage} />,
     dashboard: <Dashboard nav={setPage} />,
     inventory: <Inventory />,
     repairs:   <Repairs />,
@@ -1300,18 +1516,35 @@ export default function App() {
     history:   <History />,
   };
 
+  // 1. No role yet → show role picker
+  if (!role) return (
+    <ThemeCtx.Provider value={theme}>
+      <RolePicker onSelect={handlePickRole} dark={dark} onToggle={() => setDark(d => !d)} />
+    </ThemeCtx.Provider>
+  );
+
+  // 2. Client mode without a client selected → show client picker
+  if (role === "client" && !clientId) return (
+    <ThemeCtx.Provider value={theme}>
+      <RoleCtx.Provider value={role}>
+        <ClientCtx.Provider value={{ clientId: null }}>
+          <ClientPicker onSelect={handleSelectClient} />
+        </ClientCtx.Provider>
+      </RoleCtx.Provider>
+    </ThemeCtx.Provider>
+  );
+
+  // 3. Main app
   return (
     <ThemeCtx.Provider value={theme}>
-      <ClientCtx.Provider value={{ clientId }}>
-        {!clientId ? (
-          <ClientPicker onSelect={handleSelectClient} />
-        ) : (
+      <RoleCtx.Provider value={role}>
+        <ClientCtx.Provider value={{ clientId }}>
           <div style={{ display:"flex", height:"100vh", fontFamily:"-apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif", background:theme.bg, color:theme.text, fontSize:14, overflow:"hidden" }}>
-            <Sidebar page={page} setPage={setPage} hoverNav={hoverNav} setHoverNav={setHoverNav} dark={dark} onToggle={() => setDark(d => !d)} onChangeClient={handleChangeClient} />
-            <PageContainer page={page} pages={PAGES} onChangeClient={handleChangeClient} />
+            <Sidebar page={page} setPage={setPage} hoverNav={hoverNav} setHoverNav={setHoverNav} dark={dark} onToggle={() => setDark(d => !d)} onLogout={handleLogout} />
+            <PageContainer page={page} pages={PAGES} />
           </div>
-        )}
-      </ClientCtx.Provider>
+        </ClientCtx.Provider>
+      </RoleCtx.Provider>
     </ThemeCtx.Provider>
   );
 }
