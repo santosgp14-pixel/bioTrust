@@ -61,86 +61,88 @@ const LIGHT = {
   purpleTxt:"#6d28d9",
 };
 
-const ThemeCtx = createContext(DARK);
-const useT = () => useContext(ThemeCtx);
+const ThemeCtx  = createContext(DARK);
+const useT      = () => useContext(ThemeCtx);
+const ClientCtx = createContext(null);
+const useClient = () => useContext(ClientCtx);
 
 /* ── Data ──────────────────────────────────────────────────────────────────── */
 const EQUIPMENT = [
-  { id:"EQ-001", manufacturer:"Philips",      model:"IntelliVue MX800",  serial:"PH-2024-0081", hospital:"Hospital Italiano",    type:"Monitor",           status:"operational", cert:"valid",    location:"UCI",         lastService:"2024-11-12", nextCert:"2025-06-15" },
-  { id:"EQ-002", manufacturer:"GE Healthcare",model:"Vivid E9",          serial:"GE-2022-1134", hospital:"Sanatorio Güemes",     type:"Ecógrafo",          status:"critical",    cert:"expiring", location:"Cardiología", lastService:"2024-09-03", nextCert:"2025-03-01" },
-  { id:"EQ-003", manufacturer:"Siemens",      model:"SOMATOM Drive",     serial:"SI-2021-0445", hospital:"Hospital Alemán",      type:"Tomógrafo",         status:"in-repair",   cert:"valid",    location:"Diagnóstico", lastService:"2024-08-20", nextCert:"2025-09-10" },
-  { id:"EQ-004", manufacturer:"Mindray",      model:"BC-6800 Plus",      serial:"MR-2023-2201", hospital:"Clínica Santa Isabel", type:"Analizador",        status:"operational", cert:"expired",  location:"Laboratorio", lastService:"2024-12-01", nextCert:"2024-12-31" },
-  { id:"EQ-005", manufacturer:"Dräger",       model:"Fabius GS Premium", serial:"DR-2020-0892", hospital:"Hospital Italiano",    type:"Anestesia",         status:"operational", cert:"valid",    location:"Quirófano 3", lastService:"2024-10-15", nextCert:"2025-08-22" },
-  { id:"EQ-006", manufacturer:"Baxter",       model:"Sigma Spectrum 8.0",serial:"BX-2023-0567", hospital:"Sanatorio Güemes",     type:"Bomba Inf.",        status:"in-transit",  cert:"valid",    location:"En tránsito", lastService:"2024-11-30", nextCert:"2025-07-18" },
-  { id:"EQ-007", manufacturer:"Medtronic",    model:"Puritan Bennett 980",serial:"MD-2022-3312",hospital:"Hospital Alemán",      type:"Respirador",        status:"operational", cert:"valid",    location:"UTI",         lastService:"2024-12-10", nextCert:"2025-10-05" },
-  { id:"EQ-008", manufacturer:"Roche",        model:"cobas e 801",       serial:"RO-2021-1098", hospital:"Hospital Italiano",    type:"Inmunoanalizador",  status:"critical",    cert:"expiring", location:"Lab Central",  lastService:"2024-07-22", nextCert:"2025-02-14" },
-  { id:"EQ-009", manufacturer:"Nihon Kohden", model:"TEC-5531K",         serial:"NK-2023-0341", hospital:"Clínica Santa Isabel", type:"Desfibrilador",     status:"operational", cert:"valid",    location:"Urgencias",   lastService:"2024-11-05", nextCert:"2025-11-05" },
-  { id:"EQ-010", manufacturer:"Olympus",      model:"EVIS X1",           serial:"OL-2022-0789", hospital:"Sanatorio Güemes",     type:"Endoscopio",        status:"in-repair",   cert:"valid",    location:"Taller",      lastService:"2024-10-28", nextCert:"2025-05-20" },
+  { id:"EQ-001", clientId:"CLI-001", manufacturer:"Philips",      model:"IntelliVue MX800",   serial:"PH-2024-0081", service:"UCI",         type:"Monitor",          status:"operational", cert:"valid",    location:"UCI",         lastService:"2024-11-12", nextCert:"2025-06-15", hospital:"Hospital Italiano"    },
+  { id:"EQ-002", clientId:"CLI-002", manufacturer:"GE Healthcare",model:"Vivid E9",           serial:"GE-2022-1134", service:"Cardiología", type:"Ecógrafo",         status:"critical",    cert:"expiring", location:"Cardiología", lastService:"2024-09-03", nextCert:"2025-03-01", hospital:"Sanatorio Güemes"     },
+  { id:"EQ-003", clientId:"CLI-003", manufacturer:"Siemens",      model:"SOMATOM Drive",      serial:"SI-2021-0445", service:"Diagnóstico", type:"Tomógrafo",        status:"in-repair",   cert:"valid",    location:"Diagnóstico", lastService:"2024-08-20", nextCert:"2025-09-10", hospital:"Hospital Alemán"      },
+  { id:"EQ-004", clientId:"CLI-004", manufacturer:"Mindray",      model:"BC-6800 Plus",       serial:"MR-2023-2201", service:"Laboratorio", type:"Analizador",       status:"operational", cert:"expired",  location:"Laboratorio", lastService:"2024-12-01", nextCert:"2024-12-31", hospital:"Clínica Santa Isabel" },
+  { id:"EQ-005", clientId:"CLI-001", manufacturer:"Dräger",       model:"Fabius GS Premium",  serial:"DR-2020-0892", service:"Quirófano 3", type:"Anestesia",        status:"operational", cert:"valid",    location:"Quirófano 3", lastService:"2024-10-15", nextCert:"2025-08-22", hospital:"Hospital Italiano"    },
+  { id:"EQ-006", clientId:"CLI-002", manufacturer:"Baxter",       model:"Sigma Spectrum 8.0", serial:"BX-2023-0567", service:"Cirugía",     type:"Bomba Inf.",       status:"in-transit",  cert:"valid",    location:"En tránsito", lastService:"2024-11-30", nextCert:"2025-07-18", hospital:"Sanatorio Güemes"     },
+  { id:"EQ-007", clientId:"CLI-003", manufacturer:"Medtronic",    model:"Puritan Bennett 980", serial:"MD-2022-3312", service:"UTI",         type:"Respirador",       status:"operational", cert:"valid",    location:"UTI",         lastService:"2024-12-10", nextCert:"2025-10-05", hospital:"Hospital Alemán"      },
+  { id:"EQ-008", clientId:"CLI-001", manufacturer:"Roche",        model:"cobas e 801",        serial:"RO-2021-1098", service:"Lab Central",  type:"Inmunoanalizador", status:"critical",    cert:"expiring", location:"Lab Central",  lastService:"2024-07-22", nextCert:"2025-02-14", hospital:"Hospital Italiano"    },
+  { id:"EQ-009", clientId:"CLI-004", manufacturer:"Nihon Kohden", model:"TEC-5531K",          serial:"NK-2023-0341", service:"Urgencias",   type:"Desfibrilador",    status:"operational", cert:"valid",    location:"Urgencias",   lastService:"2024-11-05", nextCert:"2025-11-05", hospital:"Clínica Santa Isabel" },
+  { id:"EQ-010", clientId:"CLI-002", manufacturer:"Olympus",      model:"EVIS X1",            serial:"OL-2022-0789", service:"Laboratorio",  type:"Endoscopio",       status:"in-repair",   cert:"valid",    location:"Taller",      lastService:"2024-10-28", nextCert:"2025-05-20", hospital:"Sanatorio Güemes"     },
 ];
 
 const TICKETS = [
-  { id:"TK-2401", equipment:"EQ-003", model:"SOMATOM Drive",     hospital:"Hospital Alemán",      technician:"Ing. Lucas Ferreyra",  avatar:"LF", priority:"high",     status:"repairing",       created:"01/12/2024", notes:"Falla en detector del canal B. Reemplazo en curso.", parts:"DAS Module SI-A4422" },
-  { id:"TK-2402", equipment:"EQ-002", model:"Vivid E9",          hospital:"Sanatorio Güemes",     technician:"Téc. María Solano",    avatar:"MS", priority:"critical",  status:"waiting-parts",   created:"05/12/2024", notes:"Transductor M4S deteriorado. Aguardando entrega del proveedor.", parts:"Transductor M4S-RS" },
-  { id:"TK-2403", equipment:"EQ-008", model:"cobas e 801",       hospital:"Hospital Italiano",    technician:"Ing. Diego Paredes",   avatar:"DP", priority:"high",     status:"diagnosing",      created:"10/12/2024", notes:"Error E-4402 intermitente. Realizando diagnóstico de módulo fluídico.", parts:"—" },
-  { id:"TK-2404", equipment:"EQ-010", model:"EVIS X1",           hospital:"Sanatorio Güemes",     technician:"Téc. Ana Villalba",    avatar:"AV", priority:"medium",   status:"budget-approval", created:"28/11/2024", notes:"Canal de luz roto. Presupuesto enviado al cliente.", parts:"Light Guide OL-LG200" },
-  { id:"TK-2405", equipment:"EQ-001", model:"IntelliVue MX800",  hospital:"Hospital Italiano",    technician:"Ing. Lucas Ferreyra",  avatar:"LF", priority:"low",      status:"ready",           created:"20/11/2024", notes:"Cambio preventivo de batería y calibración anual completados.", parts:"Battery Kit PH-BAT2" },
-  { id:"TK-2406", equipment:"EQ-009", model:"TEC-5531K",         hospital:"Clínica Santa Isabel", technician:"Téc. María Solano",    avatar:"MS", priority:"medium",   status:"delivered",       created:"10/11/2024", notes:"Revisión periódica y prueba de descarga. Equipo entregado conforme.", parts:"—" },
+  { id:"TK-2401", clientId:"CLI-003", equipment:"EQ-003", model:"SOMATOM Drive",     hospital:"Hospital Alemán",      technician:"Ing. Lucas Ferreyra",  avatar:"LF", priority:"high",     status:"repairing",       created:"01/12/2024", notes:"Falla en detector del canal B. Reemplazo en curso.", parts:"DAS Module SI-A4422" },
+  { id:"TK-2402", clientId:"CLI-002", equipment:"EQ-002", model:"Vivid E9",          hospital:"Sanatorio Güemes",     technician:"Téc. María Solano",    avatar:"MS", priority:"critical",  status:"waiting-parts",   created:"05/12/2024", notes:"Transductor M4S deteriorado. Aguardando entrega del proveedor.", parts:"Transductor M4S-RS" },
+  { id:"TK-2403", clientId:"CLI-001", equipment:"EQ-008", model:"cobas e 801",       hospital:"Hospital Italiano",    technician:"Ing. Diego Paredes",   avatar:"DP", priority:"high",     status:"diagnosing",      created:"10/12/2024", notes:"Error E-4402 intermitente. Realizando diagnóstico de módulo fluídico.", parts:"—" },
+  { id:"TK-2404", clientId:"CLI-002", equipment:"EQ-010", model:"EVIS X1",           hospital:"Sanatorio Güemes",     technician:"Téc. Ana Villalba",    avatar:"AV", priority:"medium",   status:"budget-approval", created:"28/11/2024", notes:"Canal de luz roto. Presupuesto enviado al cliente.", parts:"Light Guide OL-LG200" },
+  { id:"TK-2405", clientId:"CLI-001", equipment:"EQ-001", model:"IntelliVue MX800",  hospital:"Hospital Italiano",    technician:"Ing. Lucas Ferreyra",  avatar:"LF", priority:"low",      status:"ready",           created:"20/11/2024", notes:"Cambio preventivo de batería y calibración anual completados.", parts:"Battery Kit PH-BAT2" },
+  { id:"TK-2406", clientId:"CLI-004", equipment:"EQ-009", model:"TEC-5531K",         hospital:"Clínica Santa Isabel", technician:"Téc. María Solano",    avatar:"MS", priority:"medium",   status:"delivered",       created:"10/11/2024", notes:"Revisión periódica y prueba de descarga. Equipo entregado conforme.", parts:"—" },
 ];
 
 const CERTS = [
   // ── Por vencer (expiring) ────────────────────────────────────────────────
-  { id:"CV-001", model:"INFINITY VISTA XL", serial:"6000355376", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"14 de mayo" },
-  { id:"CV-002", model:"INFINITY VISTA XL", serial:"6000866968", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-10", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"18 de mayo" },
-  { id:"CV-003", model:"INFINITY VISTA XL", serial:"6001252283", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"18 de mayo" },
-  { id:"CV-004", model:"INFINITY VISTA XL", serial:"6002535677", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-005", model:"INFINITY VISTA XL", serial:"6002731174", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"14 de mayo" },
-  { id:"CV-006", model:"INFINITY VISTA XL", serial:"6002751179", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"18 de mayo" },
-  { id:"CV-007", model:"INFINITY VISTA XL", serial:"3396191663", hospital:"Sanatorio Central",   type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"14 de mayo" },
-  { id:"CV-008", model:"QUBE",             serial:"1390-120217", hospital:"Clínica del Sol",     type:"Performance",   expiry:"2026-06-10", status:"expiring", issuer:"ANMAT",         mtrLoaded:true,  doneDate:"19 de mayo" },
-  { id:"CV-009", model:"QUBE",             serial:"1390-120216", hospital:"Clínica del Sol",     type:"Performance",   expiry:"2026-06-02", status:"expiring", issuer:"ANMAT",         mtrLoaded:false, doneDate:null },
-  { id:"CV-010", model:"XPREZZON",         serial:"1393-100491", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"5 de mayo" },
-  { id:"CV-011", model:"XPREZZON",         serial:"1393-100495", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-02", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"6 de mayo" },
-  { id:"CV-012", model:"XPREZZON",         serial:"1393-103606", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-013", model:"XPREZZON",         serial:"1393-103608", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-014", model:"XPREZZON",         serial:"1393-103610", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-25", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-015", model:"XPREZZON",         serial:"1393-103611", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"24 de abril" },
-  { id:"CV-016", model:"XPREZZON",         serial:"1393-103612", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-25", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-017", model:"XPREZZON",         serial:"1393-103613", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"24 de abril" },
-  { id:"CV-018", model:"XPREZZON",         serial:"1393-103647", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-04", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-019", model:"XPREZZON",         serial:"1393-103664", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-020", model:"XPREZZON",         serial:"1393-103665", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-021", model:"XPREZZON",         serial:"1393-103669", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-022", model:"XPREZZON",         serial:"1393-103670", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"14 de mayo" },
-  { id:"CV-023", model:"XPREZZON",         serial:"1393-103759", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-04", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-024", model:"XPREZZON",         serial:"1393-103765", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-21", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-025", model:"XPREZZON",         serial:"1393-106026", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-026", model:"XPREZZON",         serial:"1393-106054", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-11", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"8 de mayo" },
-  { id:"CV-027", model:"XPREZZON",         serial:"1393-106056", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-02", status:"expiring", issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CV-028", model:"XPREZZON",         serial:"1393-110893", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",          mtrLoaded:true,  doneDate:"29 de abril" },
-  { id:"CV-029", model:"MEC1200",          serial:"CC-1C120948", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-06-12", status:"expiring", issuer:"ANMAT",         mtrLoaded:true,  doneDate:"30 de abril" },
+  { id:"CV-001", clientId:"CLI-002", model:"INFINITY VISTA XL", serial:"6000355376", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"14 de mayo" },
+  { id:"CV-002", clientId:"CLI-002", model:"INFINITY VISTA XL", serial:"6000866968", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-10", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"18 de mayo" },
+  { id:"CV-003", clientId:"CLI-002", model:"INFINITY VISTA XL", serial:"6001252283", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"18 de mayo" },
+  { id:"CV-004", clientId:"CLI-002", model:"INFINITY VISTA XL", serial:"6002535677", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-005", clientId:"CLI-002", model:"INFINITY VISTA XL", serial:"6002731174", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"14 de mayo" },
+  { id:"CV-006", clientId:"CLI-002", model:"INFINITY VISTA XL", serial:"6002751179", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"18 de mayo" },
+  { id:"CV-007", clientId:"CLI-002", model:"INFINITY VISTA XL", serial:"3396191663", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-05", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"14 de mayo" },
+  { id:"CV-008", clientId:"CLI-004", model:"QUBE",              serial:"1390-120217", hospital:"Clínica Santa Isabel",type:"Performance",    expiry:"2026-06-10", status:"expiring", issuer:"ANMAT",          mtrLoaded:true,  doneDate:"19 de mayo" },
+  { id:"CV-009", clientId:"CLI-004", model:"QUBE",              serial:"1390-120216", hospital:"Clínica Santa Isabel",type:"Performance",    expiry:"2026-06-02", status:"expiring", issuer:"ANMAT",          mtrLoaded:false, doneDate:null },
+  { id:"CV-010", clientId:"CLI-002", model:"XPREZZON",          serial:"1393-100491", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"5 de mayo" },
+  { id:"CV-011", clientId:"CLI-002", model:"XPREZZON",          serial:"1393-100495", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-06-02", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"6 de mayo" },
+  { id:"CV-012", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103606", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-013", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103608", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-014", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103610", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-25", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-015", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103611", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"24 de abril" },
+  { id:"CV-016", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103612", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-25", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-017", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103613", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"24 de abril" },
+  { id:"CV-018", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103647", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-04", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-019", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103664", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-020", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103665", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-021", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103669", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-12", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-022", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103670", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-03", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"14 de mayo" },
+  { id:"CV-023", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103759", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-06-04", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-024", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103765", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-05-21", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-025", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-106026", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-026", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-106054", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-11", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"8 de mayo" },
+  { id:"CV-027", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-106056", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-02", status:"expiring", issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CV-028", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-110893", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-06-15", status:"expiring", issuer:"INTI",           mtrLoaded:true,  doneDate:"29 de abril" },
+  { id:"CV-029", clientId:"CLI-001", model:"MEC1200",           serial:"CC-1C120948", hospital:"Hospital Italiano",   type:"Performance",    expiry:"2026-06-12", status:"expiring", issuer:"ANMAT",          mtrLoaded:true,  doneDate:"30 de abril" },
   // ── No vigentes (expired) ────────────────────────────────────────────────
-  { id:"CE-001", model:"XPREZZON",         serial:"1393-100484", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-002", model:"XPREZZON",         serial:"1393-100490", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-003", model:"INFINITY GATEWAY", serial:"5513043468", hospital:"Clínica Santa Isabel", type:"Seg. Eléctrica", expiry:"2026-04-15", status:"expired",  issuer:"Bureau Veritas", mtrLoaded:false, doneDate:null },
-  { id:"CE-004", model:"INFINITY GATEWAY", serial:"5514303578", hospital:"Clínica Santa Isabel", type:"Seg. Eléctrica", expiry:"2026-04-15", status:"expired",  issuer:"Bureau Veritas", mtrLoaded:true,  doneDate:null },
-  { id:"CE-005", model:"MP5",              serial:"DE50189583", hospital:"Hospital Alemán",     type:"Performance",   expiry:"2026-04-20", status:"expired",  issuer:"ANMAT",         mtrLoaded:false, doneDate:null },
-  { id:"CE-006", model:"XPREZZON",         serial:"1393-103634", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-007", model:"XPREZZON",         serial:"1393-103638", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-008", model:"XPREZZON",         serial:"1393-103646", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-009", model:"XPREZZON",         serial:"1393-103671", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-010", model:"XPREZZON",         serial:"1393-103758", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
-  { id:"CE-011", model:"VS-800",           serial:"BY-17129649", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-04-10", status:"expired",  issuer:"ANMAT",         mtrLoaded:false, doneDate:null },
-  { id:"CE-012", model:"MP20",             serial:"DE54013117", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-04-18", status:"expired",  issuer:"ANMAT",         mtrLoaded:true,  doneDate:null },
-  { id:"CE-013", model:"MP20",             serial:"DE54013126", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-04-18", status:"expired",  issuer:"ANMAT",         mtrLoaded:true,  doneDate:null },
-  { id:"CE-014", model:"MP40",             serial:"DE82017003", hospital:"Hospital Italiano",   type:"Performance",   expiry:"2026-04-22", status:"expired",  issuer:"ANMAT",         mtrLoaded:false, doneDate:null },
-  { id:"CE-015", model:"XPREZZON",         serial:"1393-103639", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
-  { id:"CE-016", model:"XPREZZON",         serial:"1393-103762", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
-  { id:"CE-017", model:"XPREZZON",         serial:"1393-103770", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
-  { id:"CE-018", model:"XPREZZON",         serial:"1393-106031", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-019", model:"XPREZZON",         serial:"1393-106053", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-020", model:"XPREZZON",         serial:"1393-110869", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
-  { id:"CE-021", model:"XPREZZON",         serial:"1393-110885", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",          mtrLoaded:true,  doneDate:null },
-  { id:"CE-022", model:"XPREZZON",         serial:"1393-110889", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",          mtrLoaded:false, doneDate:null },
+  { id:"CE-001", clientId:"CLI-002", model:"XPREZZON",          serial:"1393-100484", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-002", clientId:"CLI-002", model:"XPREZZON",          serial:"1393-100490", hospital:"Sanatorio Güemes",    type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-003", clientId:"CLI-004", model:"INFINITY GATEWAY",  serial:"5513043468",  hospital:"Clínica Santa Isabel",type:"Seg. Eléctrica", expiry:"2026-04-15", status:"expired",  issuer:"Bureau Veritas",  mtrLoaded:false, doneDate:null },
+  { id:"CE-004", clientId:"CLI-004", model:"INFINITY GATEWAY",  serial:"5514303578",  hospital:"Clínica Santa Isabel",type:"Seg. Eléctrica", expiry:"2026-04-15", status:"expired",  issuer:"Bureau Veritas",  mtrLoaded:true,  doneDate:null },
+  { id:"CE-005", clientId:"CLI-003", model:"MP5",               serial:"DE50189583",  hospital:"Hospital Alemán",     type:"Performance",    expiry:"2026-04-20", status:"expired",  issuer:"ANMAT",          mtrLoaded:false, doneDate:null },
+  { id:"CE-006", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103634", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-007", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103638", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-008", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103646", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-009", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103671", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-010", clientId:"CLI-003", model:"XPREZZON",          serial:"1393-103758", hospital:"Hospital Alemán",     type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",           mtrLoaded:true,  doneDate:null },
+  { id:"CE-011", clientId:"CLI-001", model:"VS-800",            serial:"BY-17129649", hospital:"Hospital Italiano",   type:"Performance",    expiry:"2026-04-10", status:"expired",  issuer:"ANMAT",          mtrLoaded:false, doneDate:null },
+  { id:"CE-012", clientId:"CLI-001", model:"MP20",              serial:"DE54013117",  hospital:"Hospital Italiano",   type:"Performance",    expiry:"2026-04-18", status:"expired",  issuer:"ANMAT",          mtrLoaded:true,  doneDate:null },
+  { id:"CE-013", clientId:"CLI-001", model:"MP20",              serial:"DE54013126",  hospital:"Hospital Italiano",   type:"Performance",    expiry:"2026-04-18", status:"expired",  issuer:"ANMAT",          mtrLoaded:true,  doneDate:null },
+  { id:"CE-014", clientId:"CLI-001", model:"MP40",              serial:"DE82017003",  hospital:"Hospital Italiano",   type:"Performance",    expiry:"2026-04-22", status:"expired",  issuer:"ANMAT",          mtrLoaded:false, doneDate:null },
+  { id:"CE-015", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-103639", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",           mtrLoaded:true,  doneDate:null },
+  { id:"CE-016", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-103762", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",           mtrLoaded:true,  doneDate:null },
+  { id:"CE-017", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-103770", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-25", status:"expired",  issuer:"INTI",           mtrLoaded:true,  doneDate:null },
+  { id:"CE-018", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-106031", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-019", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-106053", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-04-30", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-020", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-110869", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
+  { id:"CE-021", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-110885", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",           mtrLoaded:true,  doneDate:null },
+  { id:"CE-022", clientId:"CLI-001", model:"XPREZZON",          serial:"1393-110889", hospital:"Hospital Italiano",   type:"Seg. Eléctrica", expiry:"2026-05-05", status:"expired",  issuer:"INTI",           mtrLoaded:false, doneDate:null },
 ];
 
 const ACTIVITY = [
@@ -363,19 +365,27 @@ function StepBar({ status }) {
 /* ── Dashboard ─────────────────────────────────────────────────────────────── */
 function Dashboard({ nav }) {
   const T = useT();
+  const { clientId } = useClient();
+  const myEquip   = EQUIPMENT.filter(e => e.clientId === clientId);
+  const myTickets = TICKETS.filter(t => t.clientId === clientId);
+  const myCerts   = CERTS.filter(c => c.clientId === clientId);
   const kpis = [
-    { label:"Equipos totales",           value:10, trend:"+2",  icon:"📦", color:T.accent,  bg:T.accentSub },
-    { label:"Reparaciones activas",      value:4,  trend:"2↑",  icon:"🔧", color:T.amber,   bg:T.amberBg  },
-    { label:"Equipos críticos",          value:2,  trend:"↑1",  icon:"⚡", color:T.red,     bg:T.redBg    },
-    { label:"Certificaciones venciendo", value:3,  trend:"<60d",icon:"📋", color:T.blue,    bg:T.blueBg   },
-    { label:"En tránsito",               value:1,  trend:"",    icon:"🚚", color:T.purple,  bg:T.purpleBg },
+    { label:"Equipos totales",           value:myEquip.length,                                    trend:"",     icon:"📦", color:T.accent,  bg:T.accentSub },
+    { label:"Reparaciones activas",      value:myTickets.filter(t=>t.status!=="delivered").length, trend:"",     icon:"🔧", color:T.amber,   bg:T.amberBg  },
+    { label:"Equipos críticos",          value:myEquip.filter(e=>e.status==="critical").length,    trend:"",     icon:"⚡", color:T.red,     bg:T.redBg    },
+    { label:"Certs. por vencer/vencidas",value:myCerts.filter(c=>c.status!=="valid").length,       trend:"<60d", icon:"📋", color:T.blue,    bg:T.blueBg   },
+    { label:"En tránsito",               value:myEquip.filter(e=>e.status==="in-transit").length,  trend:"",     icon:"🚚", color:T.purple,  bg:T.purpleBg },
   ];
-
+  const opCount  = myEquip.filter(e=>e.status==="operational").length;
+  const criCount = myEquip.filter(e=>e.status==="critical").length;
+  const repCount = myEquip.filter(e=>e.status==="in-repair").length;
   const donutData = [
-    { v:6, c:T.green,  label:"Operativos" },
-    { v:2, c:T.red,    label:"Críticos" },
-    { v:2, c:T.amber,  label:"En reparación" },
-  ];
+    { v: opCount||0,  c:T.green, label:"Operativos" },
+    { v: criCount||0, c:T.red,   label:"Críticos" },
+    { v: repCount||0, c:T.amber, label:"En reparación" },
+  ].filter(d=>d.v>0);
+  if(donutData.length===0) donutData.push({ v:1, c:T.border, label:"Sin equipos" });
+  const myActivity = ACTIVITY;
 
   return (
     <div>
@@ -415,7 +425,7 @@ function Dashboard({ nav }) {
         {/* Donut */}
         <Card style={{ padding:"20px 22px" }}>
           <div style={{ fontSize:13, fontWeight:600, color:T.text, marginBottom:4 }}>Estado del parque</div>
-          <div style={{ fontSize:11, color:T.textMut, marginBottom:14 }}>10 equipos gestionados</div>
+          <div style={{ fontSize:11, color:T.textMut, marginBottom:14 }}>{myEquip.length} equipos gestionados</div>
           <div style={{ display:"flex", alignItems:"center", gap:16 }}>
             <Donut data={donutData} />
             <div style={{ display:"flex", flexDirection:"column", gap:7 }}>
@@ -477,13 +487,18 @@ function Inventory() {
   const T = useT();
   const STATUS_CFG = mkStatus(T);
   const CERT_CFG = mkCertCfg(T);
+  const { clientId } = useClient();
   const [search, setSearch] = useState("");
+  const myEquip = EQUIPMENT.filter(e => e.clientId === clientId);
   const [filter, setFilter] = useState("all");
   const [hoverRow, setHoverRow] = useState(null);
 
-  const filtered = filterEquipment(search, filter);
-
   const filters = ["all","operational","critical","in-repair","in-transit"];
+  const q = search.toLowerCase();
+  const filtered = myEquip.filter(e =>
+    (filter === "all" || e.status === filter) &&
+    `${e.model}${e.hospital}${e.serial}${e.manufacturer}`.toLowerCase().includes(q)
+  );
 
   return (
     <div>
@@ -510,7 +525,7 @@ function Inventory() {
         <table style={{ width:"100%", borderCollapse:"collapse", fontSize:12 }}>
           <thead>
             <tr style={{ borderBottom:`1px solid ${T.border}` }}>
-              {["ID","Fabricante / Modelo","Serie","Hospital","Ubicación","Estado","Certificación","Último servicio"].map(h => (
+              {["ID","Fabricante / Modelo","Serie","Servicio","Ubicación","Estado","Certificación","Último servicio"].map(h => (
                 <th key={h} style={{ padding:"10px 16px", textAlign:"left", fontSize:10, fontWeight:600, color:T.textMut, textTransform:"uppercase", letterSpacing:"0.06em", whiteSpace:"nowrap" }}>{h}</th>
               ))}
             </tr>
@@ -526,7 +541,7 @@ function Inventory() {
                   <div style={{ fontSize:10, color:T.textMut }}>{eq.manufacturer} · {eq.type}</div>
                 </td>
                 <td style={{ padding:"13px 16px", fontFamily:"monospace", fontSize:10, color:T.textSub }}>{eq.serial}</td>
-                <td style={{ padding:"13px 16px", color:T.textSub }}>{eq.hospital}</td>
+                <td style={{ padding:"13px 16px", color:T.textSub }}>{eq.service}</td>
                 <td style={{ padding:"13px 16px", color:T.textMut, fontSize:11 }}>{eq.location}</td>
                 <td style={{ padding:"13px 16px" }}><Pill cfg={STATUS_CFG[eq.status]} dot /></td>
                 <td style={{ padding:"13px 16px" }}><Pill cfg={CERT_CFG[eq.cert]} /></td>
@@ -548,9 +563,20 @@ function Repairs() {
   const T = useT();
   const TK_CFG = mkTkCfg(T);
   const PRI_CFG = mkPriCfg(T);
-  const [selected, setSelected] = useState("TK-2401");
-  const tk = TICKETS.find(t => t.id === selected);
-  const { active, finished } = groupTicketsByDelivery();
+  const { clientId } = useClient();
+  const myTickets = TICKETS.filter(t => t.clientId === clientId);
+  const [selected, setSelected] = useState(null);
+  const selId = selected || (myTickets[0]?.id ?? null);
+  const tk = myTickets.find(t => t.id === selId);
+  const active   = myTickets.filter(t => t.status !== "delivered");
+  const finished = myTickets.filter(t => t.status === "delivered");
+
+  if(myTickets.length === 0) return (
+    <div>
+      <SectionHeader title="Taller &amp; Reparaciones" sub="Sin tickets para este cliente" />
+      <div style={{ textAlign:"center", padding:60, color:T.textMut }}>📭 Sin tickets activos</div>
+    </div>
+  );
 
   return (
     <div>
@@ -560,9 +586,9 @@ function Repairs() {
       <div style={{ display:"grid", gridTemplateColumns:"340px 1fr", gap:14 }}>
         {/* Left: ticket list */}
         <div style={{ display:"flex", flexDirection:"column", gap:8 }}>
-          {TICKETS.map(t => {
+          {myTickets.map(t => {
             const pri = PRI_CFG[t.priority] || {};
-            const isSel = t.id === selected;
+            const isSel = t.id === selId;
             return (
               <div key={t.id} onClick={() => setSelected(t.id)}
                 style={{ background: isSel ? T.card : T.surface, border:`1px solid ${isSel ? T.accent : T.borderSub}`, borderRadius:10, padding:"14px 16px", cursor:"pointer", transition:"all .15s", position:"relative", overflow:"hidden" }}
@@ -643,6 +669,8 @@ function Repairs() {
 /* ── Certifications ─────────────────────────────────────────────────────────── */
 function Certs() {
   const T = useT();
+  const { clientId } = useClient();
+  const clientCerts = CERTS.filter(c => c.clientId === clientId);
   const [mtrStatus, setMtrStatus] = useState(() => {
     const s = {};
     CERTS.forEach(c => { s[c.id] = c.mtrLoaded; });
@@ -657,15 +685,15 @@ function Certs() {
     setTimeout(() => { setMtrStatus(prev => ({ ...prev, [id]: true })); setUploading(null); }, 1500);
   };
 
-  const certsForTab = CERTS.filter(c => c.status === tab);
+  const certsForTab = clientCerts.filter(c => c.status === tab);
   const pending = [...certsForTab.filter(c => !mtrStatus[c.id])].sort((a,b) => a.expiry.localeCompare(b.expiry));
   const done    = certsForTab.filter(c =>  mtrStatus[c.id]);
 
-  const allNonValid      = CERTS.filter(c => c.status !== "valid");
+  const allNonValid      = clientCerts.filter(c => c.status !== "valid");
   const totalPendingReal = allNonValid.filter(c => !mtrStatus[c.id]).length;
   const totalDone        = allNonValid.filter(c =>  mtrStatus[c.id]).length;
-  const expiringPending  = CERTS.filter(c => c.status === "expiring" && !mtrStatus[c.id]).length;
-  const expiredPending   = CERTS.filter(c => c.status === "expired"  && !mtrStatus[c.id]).length;
+  const expiringPending  = clientCerts.filter(c => c.status === "expiring" && !mtrStatus[c.id]).length;
+  const expiredPending   = clientCerts.filter(c => c.status === "expired"  && !mtrStatus[c.id]).length;
   const showDoneCol      = tab === "expiring";
   const HEADERS = ["SI/NO", "Modelo / N° Serie", "Sanatorio", "Tipo", "Vencimiento", ...(showDoneCol ? ["Realizado el"] : []), "Acción"];
 
@@ -851,7 +879,8 @@ function Certs() {
 function Alerts({ nav }) {
   const T = useT();
   const STATUS_CFG = mkStatus(T);
-  const critical = EQUIPMENT.filter(e => e.status === "critical");
+  const { clientId } = useClient();
+  const critical = EQUIPMENT.filter(e => e.clientId === clientId && e.status === "critical");
   const notifs = [
     { pri:"critical", title:"cobas e 801 — Error E-4402 activo",          body:"Hospital Italiano · Lab Central · TK-2403 en diagnóstico",    time:"Hace 2 h",  page:"repairs" },
     { pri:"critical", title:"Vivid E9 — Transductor deteriorado",          body:"Sanatorio Güemes · Cardiología · TK-2402 esperando repuesto", time:"Hace 5 h",  page:"repairs" },
@@ -933,7 +962,9 @@ function History() {
   const T = useT();
   const STATUS_CFG = mkStatus(T);
   const CERT_CFG = mkCertCfg(T);
-  const [eqId, setEqId] = useState("EQ-003");
+  const { clientId } = useClient();
+  const myEquip = EQUIPMENT.filter(e => e.clientId === clientId);
+  const [eqId, setEqId] = useState(() => myEquip[0]?.id ?? "EQ-003");
   const eq    = EQUIPMENT.find(e => e.id === eqId);
   const items = HISTORY[eqId] || [];
 
@@ -950,7 +981,7 @@ function History() {
 
       {/* Equipment picker */}
       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:22 }}>
-        {EQUIPMENT.map(e => (
+        {myEquip.map(e => (
           <button key={e.id} onClick={() => setEqId(e.id)}
             style={{ padding:"5px 12px", borderRadius:7, border:`1px solid ${eqId===e.id ? T.accent : T.border}`, background: eqId===e.id ? T.accentSub : "transparent", color: eqId===e.id ? T.accent : T.textMut, fontSize:11, fontWeight: eqId===e.id ? 600 : 400, cursor:"pointer", transition:"all .15s" }}>
             {e.id}
@@ -1129,14 +1160,21 @@ function Sidebar({ page, setPage, hoverNav, setHoverNav, dark, onToggle }) {
   );
 }
 
-function Topbar() {
+function Topbar({ onChangeClient }) {
   const T = useT();
+  const { clientId } = useClient();
+  const client = CLIENTS.find(c => c.id === clientId);
   return (
     <div style={{ background:T.surface, borderBottom:`1px solid ${T.border}`, padding:"0 28px", height:48, display:"flex", alignItems:"center", justifyContent:"space-between", flexShrink:0 }}>
       <div style={{ display:"flex", alignItems:"center", gap:8, fontSize:11, color:T.textMut }}>
         <span>Bioingeniería Clínica Argentina</span>
-        <span style={{ color:T.border }}>·</span>
-        <span>Diciembre 2024</span>
+        {client && <>
+          <span style={{ color:T.border }}>·</span>
+          <span style={{ display:"flex", alignItems:"center", gap:5 }}>
+            <span style={{ width:7, height:7, borderRadius:"50%", background:client.color, flexShrink:0 }} />
+            <span style={{ fontWeight:600, color:T.textSub }}>{client.name}</span>
+          </span>
+        </>}
       </div>
       <div style={{ display:"flex", gap:8, alignItems:"center" }}>
         <div style={{ display:"flex", alignItems:"center", gap:6, fontSize:11, color:T.textMut }}>
@@ -1157,10 +1195,10 @@ function Topbar() {
   );
 }
 
-function PageContainer({ page, pages }) {
+function PageContainer({ page, pages, onChangeClient }) {
   return (
     <div style={{ flex:1, display:"flex", flexDirection:"column", overflow:"hidden" }}>
-      <Topbar />
+      <Topbar onChangeClient={onChangeClient} />
       <div style={{ flex:1, overflow:"auto", padding:"28px 32px" }}>
         <div style={{ maxWidth:1100 }}>
           {pages[page]}
@@ -1171,10 +1209,14 @@ function PageContainer({ page, pages }) {
 }
 
 export default function App() {
-  const [page, setPage] = useState("dashboard");
+  const [page,     setPage]     = useState("dashboard");
   const [hoverNav, setHoverNav] = useState(null);
-  const [dark, setDark] = useState(true);
+  const [dark,     setDark]     = useState(true);
+  const [clientId, setClientId] = useState(null);
   const theme = dark ? DARK : LIGHT;
+
+  const handleSelectClient = id => { setClientId(id); setPage("dashboard"); };
+  const handleChangeClient = ()  => setClientId(null);
 
   const PAGES = {
     dashboard: <Dashboard nav={setPage} />,
@@ -1187,10 +1229,16 @@ export default function App() {
 
   return (
     <ThemeCtx.Provider value={theme}>
-      <div style={{ display:"flex", height:"100vh", fontFamily:"-apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif", background:theme.bg, color:theme.text, fontSize:14, overflow:"hidden" }}>
-        <Sidebar page={page} setPage={setPage} hoverNav={hoverNav} setHoverNav={setHoverNav} dark={dark} onToggle={() => setDark(d => !d)} />
-        <PageContainer page={page} pages={PAGES} />
-      </div>
+      <ClientCtx.Provider value={{ clientId }}>
+        {!clientId ? (
+          <ClientPicker onSelect={handleSelectClient} />
+        ) : (
+          <div style={{ display:"flex", height:"100vh", fontFamily:"-apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif", background:theme.bg, color:theme.text, fontSize:14, overflow:"hidden" }}>
+            <Sidebar page={page} setPage={setPage} hoverNav={hoverNav} setHoverNav={setHoverNav} dark={dark} onToggle={() => setDark(d => !d)} onChangeClient={handleChangeClient} />
+            <PageContainer page={page} pages={PAGES} onChangeClient={handleChangeClient} />
+          </div>
+        )}
+      </ClientCtx.Provider>
     </ThemeCtx.Provider>
   );
 }
