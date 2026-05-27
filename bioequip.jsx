@@ -67,6 +67,13 @@ const ClientCtx = createContext(null);
 const useClient = () => useContext(ClientCtx);
 
 /* ── Data ──────────────────────────────────────────────────────────────────── */
+const CLIENTS = [
+  { id:"CLI-001", name:"Hospital Italiano",    city:"Buenos Aires", contact:"Dr. Marcos Pini",   phone:"011 4959-0200", plan:"Abono Premium",    color:"#4f7cff", initials:"HI", services:["UCI","Lab Central","Quirófano 3","Cardiología"],   equipCount:3, tickets:2, certsExpiring:1 },
+  { id:"CLI-002", name:"Sanatorio Güemes",     city:"Buenos Aires", contact:"Lic. Paula Romero", phone:"011 4827-8200", plan:"Abono Estándar",   color:"#22c55e", initials:"SG", services:["Cardiología","Cirugía","Laboratorio"],              equipCount:3, tickets:2, certsExpiring:2 },
+  { id:"CLI-003", name:"Hospital Alemán",      city:"Buenos Aires", contact:"Ing. Claudia Ríos", phone:"011 4827-7000", plan:"Abono Premium",    color:"#f59e0b", initials:"HA", services:["Diagnóstico","UTI","Imágenes","Taller"],           equipCount:2, tickets:1, certsExpiring:0 },
+  { id:"CLI-004", name:"Clínica Santa Isabel", city:"Córdoba",      contact:"Sr. Felipe Gauna",  phone:"0351 423-1100", plan:"Servicio Técnico", color:"#a78bfa", initials:"CS", services:["Laboratorio","Urgencias","Guardia"],                equipCount:2, tickets:1, certsExpiring:1 },
+];
+
 const EQUIPMENT = [
   { id:"EQ-001", clientId:"CLI-001", manufacturer:"Philips",      model:"IntelliVue MX800",   serial:"PH-2024-0081", service:"UCI",         type:"Monitor",          status:"operational", cert:"valid",    location:"UCI",         lastService:"2024-11-12", nextCert:"2025-06-15", hospital:"Hospital Italiano"    },
   { id:"EQ-002", clientId:"CLI-002", manufacturer:"GE Healthcare",model:"Vivid E9",           serial:"GE-2022-1134", service:"Cardiología", type:"Ecógrafo",         status:"critical",    cert:"expiring", location:"Cardiología", lastService:"2024-09-03", nextCert:"2025-03-01", hospital:"Sanatorio Güemes"     },
