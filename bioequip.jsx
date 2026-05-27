@@ -67,6 +67,8 @@ const ClientCtx = createContext(null);
 const useClient = () => useContext(ClientCtx);
 const RoleCtx   = createContext(null);          // "admin" | "client"
 const useRole   = () => useContext(RoleCtx);
+const TourCtx   = createContext({ startTour: () => {} });
+const useTour   = () => useContext(TourCtx);
 
 /* ── Data ──────────────────────────────────────────────────────────────────── */
 const CLIENTS = [
@@ -526,6 +528,144 @@ function StepBar({ status }) {
 /* ═══════════════════════════════════════════════════════════════════════════
    PAGES
 ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Guided Tour ──────────────────────────────────────────────────── */
+const TOUR_STEPS = {
+  admin: [
+    { title:"¡Bienvenido a BioEquip!",    desc:"Te guiaremos por las funciones principales del sistema interno de BioTrust. Avanzá paso a paso o sateá el tour cuando quieras.",  page:"clientes",   region:null },
+    { title:"Panel de navegación",        desc:"Desde aquí access á todos los módulos. El badge de rol indica si estás en modo Administrador o Portal Cliente.",              page:null,          region:"sidebar" },
+    { title:"Clientes",                  desc:"Vista centralizada de todas las instituciones. Cada tarjeta muestra equipos activos, tickets abiertos y certs por vencer.",   page:"clientes",   region:"content" },
+    { title:"Dashboard",                 desc:"Resumen operativo global: KPIs del parque completo, estado de equipos y actividad reciente del equipo técnico.",             page:"dashboard",  region:"content" },
+    { title:"Inventario",                desc:"Listado completo de equipos biomedicos por cliente. Filtrá por estado o buscá por modelo, serie o fabricante.",             page:"inventory",  region:"content" },
+    { title:"Taller & Reparaciones",     desc:"Gestioná tickets de servicio técnico con seguimiento por etapa: diagnóstico → reparación → presupuesto → entrega.",           page:"repairs",    region:"content" },
+    { title:"Certificaciones",           desc:"Trazabilidad metrológica completa. Controlá vencimientos, cargá MTRs y gestioná el estado legal de cada equipo.",           page:"certs",      region:"content" },
+    { title:"Alertas",                   desc:"Notificaciones priorizadas en tiempo real: equipos críticos, certificaciones urgentes y tickets de alta prioridad.",         page:"alerts",     region:"content" },
+    { title:"¡Tour finalizado!",          desc:"Ya conocés el sistema completo de BioTrust. Podés reiniciar el tour en cualquier momento con el botón 🎯 en la barra superior.",     page:null,          region:null },
+  ],
+  client: [
+    { title:"Bienvenido a tu portal",    desc:"Esta es tu vista personalizada de BioEquip. Solo verás los equipos y servicios de tu institución.",                             page:"dashboard",  region:null },
+    { title:"Dashboard",                 desc:"Resumen de tu institución: equipos activos, reparaciones en curso y alertas de certificación pendientes.",                    page:"dashboard",  region:"content" },
+    { title:"Inventario",                desc:"Todos los equipos biomédicos de tu institución con estado actual, ubicacíón y próxima fecha de certificación.",              page:"inventory",  region:"content" },
+    { title:"Certificaciones",           desc:"Estado de todas las certificaciones de tus equipos. Visualizá las próximas a vencer y las que requieren MTR.",                page:"certs",      region:"content" },
+    { title:"Taller & Reparaciones",     desc:"Seguimiento en tiempo real de todos los tickets de servicio técnico activos de tu institución.",                             page:"repairs",    region:"content" },
+    { title:"¡Todo listo!",               desc:"Ante cualquier consulta o urgencia, comunicáte con el equipo de BioTrust Ingeniería. Estamos para ayudarte.",                   page:null,          region:null },
+  ],
+};
+
+function GuidedTour({ role, onClose, onNavigate }) {
+  const T = useT();
+  const [step, setStep] = useState(0);
+  const [wSize, setWSize] = useState({ w: window.innerWidth, h: window.innerHeight });
+  useEffect(() => {
+    const fn = () => setWSize({ w: window.innerWidth, h: window.innerHeight });
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
+
+  const steps  = TOUR_STEPS[role] ?? TOUR_STEPS.admin;
+  const s      = steps[step];
+  const total  = steps.length;
+  const isLast = step === total - 1;
+  const { w, h } = wSize;
+  const SW = 216, TH = 48;
+
+  useEffect(() => { if (s.page) onNavigate(s.page); }, [step]);
+
+  const spot = s.region === "sidebar" ? { x:0,      y:0,    w:SW,       h,        rx:0  }
+             : s.region === "topbar"  ? { x:SW,     y:0,    w:w-SW,     h:TH,     rx:0  }
+             : s.region === "content" ? { x:SW+8,   y:TH+8, w:w-SW-16,  h:h-TH-16, rx:10 }
+             : null;
+
+  const TW = 360;
+  const tipStyle = s.region === "sidebar" ? { left:SW+20, top:"50%", transform:"translateY(-50%)", width:TW }
+                 : s.region === "content"  ? { right:28, bottom:28, width:TW }
+                 : { left:"50%", top:"50%", transform:"translate(-50%,-50%)", width:TW };
+
+  return (
+    <>
+      {/* Dimmed overlay with spotlight cutout */}
+      <div style={{ position:"fixed", inset:0, zIndex:2000, pointerEvents:"none" }}>
+        <svg style={{ position:"absolute", inset:0, width:"100%", height:"100%" }}>
+          {spot ? (
+            <>
+              <defs>
+                <mask id="tmask">
+                  <rect x="0" y="0" width="100%" height="100%" fill="white"/>
+                  <rect x={spot.x} y={spot.y} width={spot.w} height={spot.h} rx={spot.rx} fill="black"/>
+                </mask>
+              </defs>
+              <rect x="0" y="0" width="100%" height="100%" fill="rgba(0,0,0,0.72)" mask="url(#tmask)"/>
+            </>
+          ) : (
+            <rect x="0" y="0" width="100%" height="100%" fill="rgba(0,0,0,0.72)"/>
+          )}
+        </svg>
+        {spot && (
+          <div style={{ position:"absolute", left:spot.x, top:spot.y, width:spot.w, height:spot.h,
+            borderRadius:spot.rx, border:`2px solid ${T.accent}`,
+            boxShadow:`0 0 0 4px ${T.accent}22, 0 0 32px ${T.accent}55`, pointerEvents:"none" }} />
+        )}
+      </div>
+
+      {/* Full-screen click blocker (below tooltip) */}
+      <div style={{ position:"fixed", inset:0, zIndex:2001 }} />
+
+      {/* Tooltip card */}
+      <div onClick={e => e.stopPropagation()}
+        style={{ position:"fixed", zIndex:2002, ...tipStyle,
+          background:T.card, border:`1px solid ${T.accent}44`, borderRadius:16,
+          padding:26, boxShadow:"0 24px 60px rgba(0,0,0,0.55)", userSelect:"none" }}>
+
+        {/* Dots + skip */}
+        <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between", marginBottom:16 }}>
+          <div style={{ display:"flex", gap:4 }}>
+            {steps.map((_,i) => (
+              <div key={i} style={{ width:i===step?20:6, height:6, borderRadius:99,
+                background:i<=step?T.accent:T.border, transition:"all .25s" }} />
+            ))}
+          </div>
+          <button onClick={onClose} style={{ background:"none", border:`1px solid ${T.border}`,
+            borderRadius:6, color:T.textMut, fontSize:11, cursor:"pointer",
+            padding:"3px 8px", transition:"all .15s" }}>Saltar ✕</button>
+        </div>
+
+        {/* Step badge */}
+        <div style={{ fontSize:10, fontWeight:700, color:T.accent, textTransform:"uppercase",
+          letterSpacing:"0.09em", marginBottom:6 }}>Paso {step+1} de {total}</div>
+
+        {/* Title */}
+        <div style={{ fontSize:18, fontWeight:800, color:T.text, marginBottom:10,
+          letterSpacing:"-0.02em", lineHeight:1.2 }}>{s.title}</div>
+
+        {/* Description */}
+        <div style={{ fontSize:12.5, color:T.textSub, lineHeight:1.65, marginBottom:18 }}>{s.desc}</div>
+
+        {/* Progress bar */}
+        <div style={{ height:3, background:T.border, borderRadius:99, marginBottom:18, overflow:"hidden" }}>
+          <div style={{ height:"100%", width:`${((step+1)/total)*100}%`,
+            background:T.accent, borderRadius:99, transition:"width .35s" }} />
+        </div>
+
+        {/* Nav buttons */}
+        <div style={{ display:"flex", gap:8 }}>
+          {step > 0 && (
+            <button onClick={() => setStep(prev => prev-1)}
+              style={{ padding:"9px 18px", borderRadius:9, border:`1px solid ${T.border}`,
+                background:"transparent", color:T.textSub, fontSize:12, fontWeight:500, cursor:"pointer" }}>
+              ← Anterior
+            </button>
+          )}
+          <button onClick={() => isLast ? onClose() : setStep(prev => prev+1)}
+            style={{ flex:1, padding:"9px 0", borderRadius:9, border:"none",
+              background:T.accent, color:"#fff", fontSize:13, fontWeight:700,
+              cursor:"pointer", letterSpacing:"-0.01em" }}>
+            {isLast ? "¡Finalizar! 🎉" : "Siguiente →"}
+          </button>
+        </div>
+      </div>
+    </>
+  );
+}
 
 /* ── Clients Overview (admin page) ────────────────────────────────────────── */
 function ClientsOverview({ nav }) {
@@ -1437,6 +1577,7 @@ function Sidebar({ page, setPage, hoverNav, setHoverNav, dark, onToggle, onLogou
 function Topbar() {
   const T    = useT();
   const role = useRole();
+  const tour = useTour();
   const { clientId } = useClient();
   const client = CLIENTS.find(c => c.id === clientId);
   return (
@@ -1468,6 +1609,13 @@ function Topbar() {
           Sistema operativo
         </div>
         <div style={{ width:1, height:16, background:T.border, margin:"0 4px" }} />
+        <button onClick={tour.startTour}
+          title="Tour guiado"
+          style={{ display:"flex", alignItems:"center", gap:5, padding:"5px 12px",
+            borderRadius:8, border:`1px solid ${T.border}`, background:"transparent",
+            color:T.textMut, fontSize:11, cursor:"pointer", transition:"all .15s" }}>
+          🎯 Tour
+        </button>
         <Btn variant="ghost" style={{ fontSize:11, padding:"5px 12px" }}>
           <svg width={12} height={12} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><circle cx={12} cy={12} r={3}/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
           Configuración
@@ -1498,11 +1646,13 @@ export default function App() {
   const [page,     setPage]     = useState("dashboard");
   const [hoverNav, setHoverNav] = useState(null);
   const [dark,     setDark]     = useState(true);
-  const [role,     setRole]     = useState(null);      // null | "admin" | "client"
+  const [role,     setRole]     = useState(null);
   const [clientId, setClientId] = useState(null);
+  const [tourActive, setTourActive] = useState(false);
   const theme = dark ? DARK : LIGHT;
+  const tourCtx = { startTour: () => setTourActive(true) };
 
-  const handlePickRole    = r  => { setRole(r); setPage(r==="admin" ? "clientes" : "dashboard"); };
+  const handlePickRole    = r  => { setRole(r); setPage(r==="admin" ? "clientes" : "dashboard"); setTourActive(true); };
   const handleSelectClient= id => { setClientId(id); setPage("dashboard"); };
   const handleLogout      = () => { setRole(null); setClientId(null); setPage("dashboard"); };
 
@@ -1539,10 +1689,15 @@ export default function App() {
     <ThemeCtx.Provider value={theme}>
       <RoleCtx.Provider value={role}>
         <ClientCtx.Provider value={{ clientId }}>
-          <div style={{ display:"flex", height:"100vh", fontFamily:"-apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif", background:theme.bg, color:theme.text, fontSize:14, overflow:"hidden" }}>
-            <Sidebar page={page} setPage={setPage} hoverNav={hoverNav} setHoverNav={setHoverNav} dark={dark} onToggle={() => setDark(d => !d)} onLogout={handleLogout} />
-            <PageContainer page={page} pages={PAGES} />
-          </div>
+          <TourCtx.Provider value={tourCtx}>
+            <div style={{ display:"flex", height:"100vh", fontFamily:"-apple-system, 'SF Pro Display', 'Segoe UI', system-ui, sans-serif", background:theme.bg, color:theme.text, fontSize:14, overflow:"hidden" }}>
+              <Sidebar page={page} setPage={setPage} hoverNav={hoverNav} setHoverNav={setHoverNav} dark={dark} onToggle={() => setDark(d => !d)} onLogout={handleLogout} />
+              <PageContainer page={page} pages={PAGES} />
+            </div>
+            {tourActive && (
+              <GuidedTour role={role} onClose={() => setTourActive(false)} onNavigate={setPage} />
+            )}
+          </TourCtx.Provider>
         </ClientCtx.Provider>
       </RoleCtx.Provider>
     </ThemeCtx.Provider>
