@@ -301,6 +301,72 @@ function Btn({ children, variant="ghost", onClick, style={} }) {
   return <button onClick={onClick} onMouseEnter={() => setHov(true)} onMouseLeave={() => setHov(false)} style={{ ...base, ...variants[variant], ...style }}>{children}</button>;
 }
 
+/* ── Client Picker (entry screen) ─────────────────────────────────────────── */
+function ClientPicker({ onSelect }) {
+  const T   = useT();
+  const [hov, setHov] = useState(null);
+  return (
+    <div style={{ minHeight:"100vh", background:T.bg, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:32, fontFamily:"-apple-system,'SF Pro Display','Segoe UI',system-ui,sans-serif" }}>
+      {/* Logo */}
+      <div style={{ display:"flex", alignItems:"center", gap:12, marginBottom:10 }}>
+        <div style={{ width:38, height:38, borderRadius:10, background:T.accentSub, border:`1px solid ${T.accent}44`, display:"flex", alignItems:"center", justifyContent:"center" }}>
+          <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={T.accent} strokeWidth={2} strokeLinecap="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <div>
+          <div style={{ fontSize:18, fontWeight:700, color:T.text, letterSpacing:"-0.02em" }}>BioEquip</div>
+          <div style={{ fontSize:10, color:T.textMut }}>Plataforma de Gestión Biomédica</div>
+        </div>
+      </div>
+      <p style={{ fontSize:12, color:T.textMut, marginBottom:36 }}>Seleccioná un cliente para continuar</p>
+
+      <div style={{ display:"grid", gridTemplateColumns:"repeat(2,1fr)", gap:16, width:"100%", maxWidth:640 }}>
+        {CLIENTS.map(cl => (
+          <div key={cl.id}
+            onClick={() => onSelect(cl.id)}
+            onMouseEnter={() => setHov(cl.id)}
+            onMouseLeave={() => setHov(null)}
+            style={{
+              background: hov===cl.id ? T.cardHov : T.card,
+              border:`2px solid ${hov===cl.id ? cl.color : T.borderSub}`,
+              borderRadius:14, padding:"22px 24px", cursor:"pointer",
+              transition:"all .15s", position:"relative", overflow:"hidden"
+            }}>
+            <div style={{ position:"absolute", top:0, left:0, right:0, height:3, background:cl.color, borderRadius:"14px 14px 0 0" }} />
+            <div style={{ display:"flex", alignItems:"flex-start", gap:14, marginBottom:14 }}>
+              <div style={{ width:44, height:44, borderRadius:11, background:cl.color+"22", border:`1px solid ${cl.color}44`,
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:14, fontWeight:800, color:cl.color, flexShrink:0 }}>{cl.initials}</div>
+              <div style={{ flex:1, minWidth:0 }}>
+                <div style={{ fontWeight:600, fontSize:14, color:T.text, marginBottom:2 }}>{cl.name}</div>
+                <div style={{ fontSize:11, color:T.textMut }}>{cl.city} · {cl.plan}</div>
+              </div>
+            </div>
+            <div style={{ display:"grid", gridTemplateColumns:"1fr 1fr 1fr", gap:8, marginBottom:14 }}>
+              {[
+                { label:"Equipos",  value:cl.equipCount,    color:T.accent },
+                { label:"Tickets",  value:cl.tickets,       color:cl.tickets>1?T.amber:T.textMut },
+                { label:"Certs ⚠️", value:cl.certsExpiring, color:cl.certsExpiring>0?T.red:T.green },
+              ].map(s => (
+                <div key={s.label} style={{ background:T.surface, borderRadius:7, padding:"7px 8px", border:`1px solid ${T.borderSub}` }}>
+                  <div style={{ fontSize:17, fontWeight:700, color:s.color, lineHeight:1 }}>{s.value}</div>
+                  <div style={{ fontSize:9, color:T.textMut, marginTop:2 }}>{s.label}</div>
+                </div>
+              ))}
+            </div>
+            <div style={{ display:"flex", flexWrap:"wrap", gap:5 }}>
+              {cl.services.slice(0,3).map(s => (
+                <span key={s} style={{ fontSize:9.5, background:T.surface, border:`1px solid ${T.border}`, color:T.textMut, padding:"2px 8px", borderRadius:99 }}>{s}</span>
+              ))}
+              {cl.services.length>3 && <span style={{ fontSize:9.5, color:T.textMut }}>+{cl.services.length-3} más</span>}
+            </div>
+            <div style={{ marginTop:14, textAlign:"right", fontSize:11, fontWeight:600, color:cl.color, opacity: hov===cl.id?1:0.5, transition:"opacity .15s" }}>Ingresar →</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 /* ── Bar Chart ─────────────────────────────────────────────────────────────── */
 function BarChart() {
   const T = useT();
